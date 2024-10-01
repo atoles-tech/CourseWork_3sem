@@ -13,8 +13,8 @@ string Hash::generateSalt() {
 long long int Hash::getHash(string password, string salt) {
 	long long int hash = 0;
 	for (char c : password) {
-		hash += (int)c << 4;
-		hash += salt[(int)c % 8] << 4;
+		hash += (int)c << 8;
+		hash += salt[(int)c % 8] << 8;
 	}
 	return hash;
 }
