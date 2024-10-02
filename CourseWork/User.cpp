@@ -16,6 +16,16 @@ User::User(string login, long long int hash, bool isAdmin, string salt) {
 	this->salt = salt;
 }
 
+User User::getUser(vector<User> users,string login) {
+	User user;
+
+	for (User u : users) {
+		if (u.login == login) { return u; }
+	}
+
+	return user;
+}
+
 vector<User> User::readUsers() {
 	vector<User> users;
 	

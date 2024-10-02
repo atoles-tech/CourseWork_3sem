@@ -12,7 +12,8 @@ int main() {
 	srand(time(NULL));
 #if 0
 	vector<User> users;
-	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGH"), true, "ABCDEFGH"));
+	users.push_back(User("user", Hash::getHash("user", "ABCDEFGP"), false, "ABCDEFGP"));
+	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGK"), true, "ABCDEFGK"));
 	User::writeAllUsers(users);
 	users = User::readUsers();
 	cout << users[0].getLogin();

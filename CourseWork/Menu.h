@@ -1,11 +1,13 @@
 #include <iostream>
 #include "ConsoleHelper.h"
+#include "User.h"
+#include "HashFunc.h"
 
 class Menu {
 public:
 	static void initMenu(); //ћеню авторизации
-	static void adminMenu(); //ћеню администратора(менеджера/управл€ющего)
-	static void userMenu(); //ћеню пользовател€(механика)
+	static void adminMenu(string name); //ћеню администратора(менеджера/управл€ющего)
+	static void userMenu(string name); //ћеню пользовател€(механика)
 	static void authorize(); //јвторизаци€
 	static void registr(); //–егистраци€
 };
