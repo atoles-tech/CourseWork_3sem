@@ -1,19 +1,19 @@
 #include <iostream>
 #include <windows.h>
-#include "Menu.h"
+#include "Menu.h"				//DANGER//
 #include "HashFunc.h"
 #include "User.h"
 #include "ServiceStation.h"
 #include "Client.h"
 #include "Vehicle.h"
-#include "ConsoleHelper.h" //DANGER//
+#include "ConsoleHelper.h"		//DANGER//
 
 int main() {
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	
+
 	srand(time(NULL));
-	
+
 #if 0
 	vector<User> users;
 	users.push_back(User("user", Hash::getHash("user", "ABCDEFGP"), false, "ABCDEFGP",false));

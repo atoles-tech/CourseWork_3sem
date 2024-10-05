@@ -127,20 +127,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="Bill.cpp" />
     <ClCompile Include="ConsoleHelper.cpp" />
     <ClCompile Include="HashFunc.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Request.cpp" />
+    <ClCompile Include="Service.cpp" />
     <ClCompile Include="ServiceStation.cpp" />
     <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Bill.h" />
     <ClInclude Include="ConsoleHelper.h" />
     <ClInclude Include="HashFunc.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Request.h" />
+    <ClInclude Include="Service.h" />
     <ClInclude Include="ServiceStation.h" />
     <ClInclude Include="Vehicle.h" />
     <ClInclude Include="User.h" />
