@@ -70,3 +70,46 @@ vector<string> ConsoleHelper::split(string str) {
 
 	return tokens;
 }
+
+string ConsoleHelper::getPassword(string str) {
+	const int maxLength = 40;
+	char input[maxLength];
+	int index = 0;
+
+	cout << str;
+
+	while (true) {
+		char ch = _getch();
+
+		if (ch == 13) { // Enter
+			break;
+		}
+		else if (ch == 8) { // Backspace
+			if (index > 0) {
+				index--;
+				std::cout << "\b \b";
+			}
+		}
+		else if(ch == ';') { // ;
+			continue;
+		}
+		else if (index < maxLength - 1) {
+			input[index++] = ch;
+			std::cout << '*';
+		}
+	}
+
+	input[index] = '\0';
+	string s = input;
+
+	return s;
+}
+
+bool ConsoleHelper::checkString(string str) {
+	for (char c : str) {
+		if (c == ';') {
+			return false;
+		}
+	}
+	return true;
+}

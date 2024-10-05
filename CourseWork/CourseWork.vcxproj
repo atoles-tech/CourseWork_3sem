@@ -131,12 +131,18 @@
     <ClCompile Include="HashFunc.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Menu.cpp" />
+    <ClCompile Include="Client.cpp" />
+    <ClCompile Include="ServiceStation.cpp" />
+    <ClCompile Include="Vehicle.cpp" />
     <ClCompile Include="User.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ConsoleHelper.h" />
     <ClInclude Include="HashFunc.h" />
     <ClInclude Include="Menu.h" />
+    <ClInclude Include="Client.h" />
+    <ClInclude Include="ServiceStation.h" />
+    <ClInclude Include="Vehicle.h" />
     <ClInclude Include="User.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

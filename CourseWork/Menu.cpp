@@ -16,7 +16,7 @@ void Menu::initMenu() {
 			Menu::authorize();
 			break;
 		case 2:
-			//Menu::registr();
+			Menu::registr();
 			break;
 		case 3:
 			return;
@@ -40,7 +40,7 @@ void Menu::authorize() {
 	system("cls");
 	vector<User> users = User::readUsers();
 	string login = ConsoleHelper::readString("Введите имя: ");
-	
+
 	User user = User::getUser(users,login);
 	
 	if (user.getLogin() == "-") {
@@ -58,10 +58,49 @@ void Menu::authorize() {
 		return;
 	}
 
+	if (!user.getAccess()) {
+		cout << "В доступе отказано!" << endl;
+		cout << "Ожидайте разблокоривки администратором!" << endl;
+		system("pause");
+		return;
+	}
+
 	if (user.getRole()) {
 		Menu::adminMenu(user.getLogin());
 	}
 	else {
 		Menu::userMenu(user.getLogin());
 	}
+}
+
+void Menu::registr() {
+	system("cls");
+
+	vector<User> users = User::readUsers();
+
+	string login = ConsoleHelper::readString("Введите имя: ");
+
+	if (!ConsoleHelper::checkString(login)) {
+		cout << "Неккоректный формат логина!" << endl;
+		system("pause");
+		return;
+	}
+
+	for (User user : users) {
+		if (user.getLogin() == login) {
+			cout << "Пользователь с данным именем существует!" << endl;
+			system("pause");
+			return;
+		}
+	}
+
+	string password = ConsoleHelper::getPassword("Введите пароль: ");
+	
+	string salt = Hash::generateSalt();
+
+	long long int hash = Hash::getHash(password, salt);
+
+	User user(login, hash, false, salt, false);
+
+	User::writeUser(user);
 }

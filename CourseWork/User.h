@@ -6,9 +6,10 @@
 
 #ifndef USER_
 #define USER_
+
 using namespace std;
 
-class User { // login hash 1||0 salt
+class User { // login hash 1/0 salt access
 private:
 	const static string filename;
 
@@ -16,17 +17,20 @@ private:
 	long long int hash;
 	bool isAdmin;
 	string salt;
+	bool isAccess;
 public:
 	User();
-	User(string login, long long int hash, bool isAdmin, string salt);
+	User(string login, long long int hash, bool isAdmin, string salt, bool isAccess);
 	static User getUser(vector<User> users, string login);
 	static vector<User> readUsers();
 	static void writeAllUsers(vector<User> users);
+	static void writeUser(User u);
 public:
-	string getLogin() { return login; }
-	string getSalt() { return salt; }
-	long long int getHash() { return hash; }
-	bool getRole() { return isAdmin; }
+	string getLogin();
+	string getSalt();
+	long long int getHash();
+	bool getRole();
+	bool getAccess();
 };
 
 #endif USER_

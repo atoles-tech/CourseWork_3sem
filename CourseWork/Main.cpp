@@ -3,6 +3,9 @@
 #include "Menu.h"
 #include "HashFunc.h"
 #include "User.h"
+#include "ServiceStation.h"
+#include "Client.h"
+#include "Vehicle.h"
 #include "ConsoleHelper.h" //DANGER//
 
 int main() {
@@ -10,14 +13,16 @@ int main() {
 	SetConsoleOutputCP(1251);
 	
 	srand(time(NULL));
+	
 #if 0
 	vector<User> users;
-	users.push_back(User("user", Hash::getHash("user", "ABCDEFGP"), false, "ABCDEFGP"));
-	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGK"), true, "ABCDEFGK"));
+	users.push_back(User("user", Hash::getHash("user", "ABCDEFGP"), false, "ABCDEFGP",false));
+	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGK"), true, "ABCDEFGK",true));
 	User::writeAllUsers(users);
 	users = User::readUsers();
 	cout << users[0].getLogin();
 #endif
+
 	Menu::initMenu();
 
 	return 0;
