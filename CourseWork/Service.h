@@ -3,11 +3,17 @@
 
 #include <iostream>
 #include <string>
+#include <vector>
+#include <memory>
+#include <fstream>
+#include "ConsoleHelper.h"
 
 using namespace std;
 
 class Service {
 private:
+	const static string filename;
+
 	int service_id;
 	string name;
 	double price;
@@ -26,6 +32,10 @@ public:
 	void setName(string name);
 	void setPrice(double price);
 	void setTime(int time);
+
+	/*Чтение из файла + запись в файл*/
+	static vector<shared_ptr<Service>> readFile();
+	static void writeFile(vector<shared_ptr<Service>> services);
 };
 
 #endif // !SERVICE_H

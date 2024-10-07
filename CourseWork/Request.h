@@ -4,30 +4,46 @@
 #include <iostream>
 #include <string>
 #include <memory>
+#include <vector>
 #include "Client.h"
+#include "Mechanic.h"
 #include "Vehicle.h"
 #include "Service.h"
 #include "Bill.h"
 
 using namespace std;
 
+class Mechanic;
+class Client;
+
 class Request {
 private:
+	const static string filename;
 
 	int id;
-	shared_ptr<Client> client;
+	string client;
+	string mechanic;
 	shared_ptr<Vehicle> vehicle;
 	Bill bill;
 	vector<shared_ptr<Service>> services;
+	int status; // 0 - ожидает | 1 - ремонтируется | 2 - отремантирован
 public:
-	Request(shared_ptr<Client> client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services);
+	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status);
 
 	/*Геттеры*/
 	int getId();
-	shared_ptr<Client> getClient();
+	string getClient();
 	shared_ptr<Vehicle> getVehicle();
 	Bill getBill();
 	vector<shared_ptr<Service>> getServices();
+
+	/*Сеттеры*/
+	void setStatus(int status);
+	void setMechanic(string mechanic);
+
+	/*Чтение из файла + запись в файл*/
+	static vector<shared_ptr<Request>> readFile(vector<shared_ptr<Vehicle>> vehicles, vector<shared_ptr<Service>> services);
+	static void writeFile(vector<shared_ptr<Request>> requests);
 };
 
 #endif // !REQUEST_H

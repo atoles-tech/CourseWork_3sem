@@ -22,8 +22,21 @@ void ServiceStation::addRequest(shared_ptr<Request> r) {
 	requests.push_back(r);
 }
 
+void ServiceStation::addMechanic(shared_ptr<Mechanic> m) {
+	mechanics.push_back(m);
+}
+
+void ServiceStation::init() {
+	this->vehicles = Vehicle::readFile();
+	this->services = Service::readFile();
+	this->requests = Request::readFile(vehicles,services);
+	this->clients = Client::readFile(requests, vehicles);
+	this->mechanics = Mechanic::readFile(requests);
+}
+
 /*Геттеры*/
 vector<shared_ptr<Vehicle>> ServiceStation::getVehicles() {return vehicles;}
 vector<shared_ptr<Client>> ServiceStation::getClients() {return clients;}
 vector<shared_ptr<Service>> ServiceStation::getServices() { return services; }
 vector<shared_ptr<Request>> ServiceStation::getRequests() { return requests; }
+vector<shared_ptr<Mechanic>> ServiceStation::getMechanics() { return mechanics; }
