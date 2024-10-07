@@ -22,6 +22,7 @@ int main() {
 
 	srand(time(NULL));
 
+	ServiceStation::getInstance().init();
 #if 0
 	ServiceStation s = ServiceStation::getInstance();
 	s.init();
