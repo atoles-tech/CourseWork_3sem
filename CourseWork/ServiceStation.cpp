@@ -34,6 +34,33 @@ void ServiceStation::init() {
 	this->mechanics = Mechanic::readFile(requests);
 }
 
+void ServiceStation::saveAllData() {
+	Vehicle::writeFile(vehicles);
+	Service::writeFile(services);
+	Request::writeFile(requests);
+	Client::writeFile(clients);
+	Mechanic::writeFile(mechanics);
+}
+
+/*Проверка*/
+bool ServiceStation::hasClient(string login) {
+	for (shared_ptr<Client> c : clients) {
+		if (c->getLogin() == login) {
+			return true;
+		}
+	}
+	return false;
+}
+
+bool ServiceStation::hasMechanic(string login) {
+	for (shared_ptr<Mechanic> m : mechanics) {
+		if (m->getLogin() == login) {
+			return true;
+		}
+	}
+	return false;
+}
+
 /*Геттеры*/
 vector<shared_ptr<Vehicle>> ServiceStation::getVehicles() {return vehicles;}
 vector<shared_ptr<Client>> ServiceStation::getClients() {return clients;}

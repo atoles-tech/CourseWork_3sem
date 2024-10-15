@@ -9,13 +9,6 @@ Client::Client(string login, string name, string surname, string email) {
 	this->email = email;
 }
 
-Client::Client(string login, string name, string surname) {
-	this->login = login;
-	this->name = name;
-	this->surname = surname;
-	this->email = "N/A";
-}
-
 void Client::addVehicle(shared_ptr<Vehicle> vehicle) {
 	vehicles.push_back(vehicle);
 }
@@ -91,7 +84,7 @@ vector<shared_ptr<Client>> Client::readFile(vector<shared_ptr<Request>> req, vec
 	return clients;
 }
 
-void Client::writeFile(vector<shared_ptr<Client>> clients) { ////////
+void Client::writeFile(vector<shared_ptr<Client>> clients) {
 	ofstream f(filename, ios::binary);
 	
 	for (shared_ptr<Client> c : clients) {
@@ -110,4 +103,23 @@ void Client::writeFile(vector<shared_ptr<Client>> clients) { ////////
 		}
 		f << endl;
 	}
+}
+
+void Client::writeOneFile(shared_ptr<Client> c) {
+	ofstream f(filename, ios::binary | std::ios::app);
+
+	f << c->login << ";"
+		<< c->name << ";"
+		<< c->surname << ";"
+		<< c->email << endl;
+
+	for (shared_ptr<Request> r : c->getRequests()) {
+		f << r->getId() << ";";
+	}
+	f << endl;
+
+	for (shared_ptr<Vehicle> v : c->getVehicles()) {
+		f << v->getNumber() << ";";
+	}
+	f << endl;
 }

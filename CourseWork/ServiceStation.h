@@ -31,6 +31,13 @@ public:
 
 	void init();
 
+	/*Сохранение*/
+	void saveAllData();
+
+	/*Проверка*/
+	bool hasClient(string login);
+	bool hasMechanic(string login);
+
 	/*Геттеры*/
 	vector<shared_ptr<Vehicle>> getVehicles();
 	vector<shared_ptr<Client>> getClients();

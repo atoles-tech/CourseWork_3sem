@@ -18,6 +18,7 @@ public:
 	static vector<string> split(string str); // Разбиваем строку
 	static string getPassword(string str); // Ввод пароля(Символы закрыты символом *)
 	static bool checkString(string str); // Проверка строки на ввод неккоректных символов
+	static bool checkName(string name); // Проверка имени или фамилии на неккоретные символы
 };
 
 #endif CONSOLEHELPER_H

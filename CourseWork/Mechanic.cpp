@@ -91,3 +91,18 @@ void Mechanic::writeFile(vector<shared_ptr<Mechanic>> mechanics) {
 		f << endl;
 	}
 }
+
+void Mechanic::writeOneFile(shared_ptr<Mechanic> mech) {
+	ofstream f(filename, ios::binary | std::ios::app);
+
+	f << mech->login << ";"
+		<< mech->name << ";"
+		<< mech->surname << ";"
+		<< mech->email << ";"
+		<< (mech->isBusy == true ? "1" : "0") << endl;
+
+	for (shared_ptr<Request> r : mech->getRequests()) {
+		f << r->getId() << ";";
+	}
+	f << endl;
+}

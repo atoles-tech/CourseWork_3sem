@@ -2,6 +2,7 @@
 #include <windows.h>
 #include <memory>
 #include <vector>
+
 #include "Menu.h"				//DANGER//
 #include "HashFunc.h"
 #include "User.h"
@@ -23,22 +24,14 @@ int main() {
 	srand(time(NULL));
 
 	ServiceStation::getInstance().init();
+
 #if 0
 	ServiceStation s = ServiceStation::getInstance();
 	s.init();
 
-	shared_ptr<Mechanic> m = make_shared<Mechanic>("admin", "Vasiliy", "Sokolov", "lox@lox.ru");
+	shared_ptr<Mechanic> m = make_shared<Mechanic>("admin", "123", "fs", "123@123.ru");
 	m->addRequest(s.getRequests()[0]);
 	s.addMechanic(m);
-	Mechanic::writeFile(s.getMechanics());
-
-	vector<shared_ptr<Mechanic>> mech = Mechanic::readFile(s.getRequests());
-
-	for (shared_ptr<Mechanic> mc : mech) {
-		cout << mc->getRequests()[0]->getId() << " " << mc->getLogin() << endl;
-	}
-
-	system("pause");
 #endif
 #if 0
 	ServiceStation s = ServiceStation::getInstance();
@@ -104,8 +97,9 @@ int main() {
 #endif
 #if 0
 	vector<User> users;
-	users.push_back(User("user", Hash::getHash("user", "ABCDEFGP"), false, "ABCDEFGP",false));
-	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGK"), true, "ABCDEFGK",true));
+	users.push_back(User("mech", Hash::getHash("1234", "ABCDEFGP"), 1, "ABCDEFGP", true));
+	users.push_back(User("user1", Hash::getHash("1234", "ABCDEFGP"), 0, "ABCDEFGP",true));
+	users.push_back(User("admin", Hash::getHash("admin", "ABCDEFGK"), 2, "ABCDEFGK",true));
 	User::writeAllUsers(users);
 	users = User::readUsers();
 	cout << users[0].getLogin();

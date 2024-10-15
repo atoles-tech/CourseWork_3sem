@@ -113,3 +113,13 @@ bool ConsoleHelper::checkString(string str) {
 	}
 	return true;
 }
+
+bool ConsoleHelper::checkName(string name) {
+	if (name.size() < 1) { return false; }
+	for (char c : name) {
+		if ((c >= 192 && c <= 223) || (c >= 224 && c <= 255)) {
+			return false;
+		}
+	}
+	return true;
+}

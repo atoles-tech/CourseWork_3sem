@@ -10,7 +10,7 @@ User::User() {
 	this->isAccess = false;
 }
 
-User::User(string login, long long int hash, bool isAdmin, string salt, bool isAccess) {
+User::User(string login, long long int hash, int isAdmin, string salt, bool isAccess) {
 	this->login = login;
 	this->hash = hash;
 	this->isAdmin = isAdmin;
@@ -44,7 +44,7 @@ vector<User> User::readUsers() {
 
 		string login = fields[0];
 		long long int hash = stoll(fields[1]);
-		bool isAdmin = fields[2] == "1"?true:false;
+		int isAdmin = stoi(fields[2]);
 		string salt = fields[3];
 		bool isAccess = fields[4] == "1" ? true : false;
 
@@ -60,7 +60,7 @@ void User::writeAllUsers(vector<User> users) {
 	for (User u : users) {
 		f   << u.login << ";"
 			<< u.hash << ";"
-			<<(u.isAdmin == true ? "1" : "0") << ";"
+			<< u.isAdmin << ";"
 			<< u.salt << ";"
 			<<(u.isAccess == true ? "1" : "0") << ";" << endl;
 	}
@@ -72,7 +72,7 @@ void User::writeUser(User u) {
 
 	f   << u.login << ";"
 		<< u.hash << ";"
-		<<(u.isAdmin == true ? "1" : "0") << ";"
+		<< u.isAdmin << ";"
 		<< u.salt << ";"
 		<<(u.isAccess == true ? "1" : "0") << ";" << endl;
 }
@@ -81,5 +81,5 @@ void User::writeUser(User u) {
 string User::getLogin() { return login; }
 string User::getSalt() { return salt; }
 long long int User::getHash() { return hash; }
-bool User::getRole() { return isAdmin; }
+int User::getRole() { return isAdmin; }
 bool User::getAccess() { return isAccess; }

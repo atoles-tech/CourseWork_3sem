@@ -41,6 +41,7 @@ public:
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Mechanic>> readFile(vector<shared_ptr<Request>> req);
 	static void writeFile(vector<shared_ptr<Mechanic>> mechanics);
+	static void writeOneFile(shared_ptr<Mechanic> mech);
 };
 
 #endif

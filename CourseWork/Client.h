@@ -24,7 +24,6 @@ private:
 	vector<shared_ptr<Request>> requests;
 public:
 	Client(string login, string name, string surname, string email);
-	Client(string login, string name, string surname);
 
 	void addVehicle(shared_ptr<Vehicle> vehicle);
 	void addRequest(shared_ptr<Request> request);
@@ -43,6 +42,7 @@ public:
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Client>> readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh);
 	static void writeFile(vector<shared_ptr<Client>> clients);
+	static void writeOneFile(shared_ptr<Client> c);
 };
 
 #endif // !CLIENT_H
