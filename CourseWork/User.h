@@ -2,7 +2,9 @@
 #include <string>
 #include <vector>
 #include <fstream>
+#include <iomanip>
 #include "ConsoleHelper.h"
+#include "HashFunc.h"
 
 #ifndef USER_
 #define USER_
@@ -25,12 +27,20 @@ public:
 	static vector<User> readUsers();
 	static void writeAllUsers(vector<User> users);
 	static void writeUser(User u);
+	static vector<User> showUsers();
+	static User changeUser(vector<User> users, User user);
 public:
 	string getLogin();
 	string getSalt();
 	long long int getHash();
 	int getRole();
 	bool getAccess();
+
+	void setLogin(string login);
+	void setSalt(string salt);
+	void setHash(long long int hash);
+	void setRole(int role);
+	void setAccess(bool access);
 };
 
 #endif USER_

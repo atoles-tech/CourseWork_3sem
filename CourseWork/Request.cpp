@@ -28,6 +28,8 @@ vector<shared_ptr<Service>> Request::getServices() { return services; }
 /*Сеттеры*/
 void Request::setStatus(int status) {this->status = status;}
 void Request::setMechanic(string mechanic) { this->mechanic = mechanic; }
+void Request::setClient(string client) { this->client = client; }
+void Request::setId(int id) { this->id = id; }
 
 /*Чтение из файла + запись в файл*/
 vector<shared_ptr<Request>> Request::readFile(vector<shared_ptr<Vehicle>> vehicles, vector<shared_ptr<Service>> services) {

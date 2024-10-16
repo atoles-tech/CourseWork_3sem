@@ -77,9 +77,40 @@ void User::writeUser(User u) {
 		<<(u.isAccess == true ? "1" : "0") << ";" << endl;
 }
 
+vector<User> User::showUsers() {
+	vector<User> users = readUsers();
 
+	cout << setw(7) << "Номер" << "|"
+		<< setw(15) << "Логин" << "|"
+		<< setw(10) << "Роль" << "|"
+		<< setw(20) << "Доступ" << "|" << endl;
+
+	cout << string(56,'=') << endl;
+
+	int i = 1;
+	for (User u : users) {
+		cout << setw(7) << i++ << "|"
+			 << setw(15) << u.login << "|"
+			 << setw(10) << (u.isAdmin == 0 ? "Клиент" : (u.isAdmin == 1 ? "Механик" : "Админ")) << "|"
+			 << setw(20) << (u.isAccess == true ? "Доступ разрешен" : "Доступ запрещен") << "|" <<  endl;
+	}
+
+	return users;
+}
+
+
+
+
+/*Геттеры*/
 string User::getLogin() { return login; }
 string User::getSalt() { return salt; }
 long long int User::getHash() { return hash; }
 int User::getRole() { return isAdmin; }
 bool User::getAccess() { return isAccess; }
+
+/**/
+void User::setLogin(string login) { this->login = login; }
+void User::setSalt(string salt) { this->salt = salt; }
+void User::setHash(long long int hash) { this->hash = hash; }
+void User::setRole(int role) { this->isAdmin = role; }
+void User::setAccess(bool access) { this->isAccess = access; }

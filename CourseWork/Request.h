@@ -40,6 +40,8 @@ public:
 	/*Сеттеры*/
 	void setStatus(int status);
 	void setMechanic(string mechanic);
+	void setClient(string client);
+	void setId(int id);
 
 	/*Чтение из файла + запись в файл*/
 	static vector<shared_ptr<Request>> readFile(vector<shared_ptr<Vehicle>> vehicles, vector<shared_ptr<Service>> services);

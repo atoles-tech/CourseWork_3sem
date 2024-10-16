@@ -27,6 +27,9 @@ vector<shared_ptr<Request>> Client::getRequests() { return requests; }
 
 /*Сеттеры*/
 void Client::setEmail(string email) { this->email = email; }
+void Client::setLogin(string login) { this->login = login; }
+void Client::setName(string name) { this->name = name; }
+void Client::setSurname(string surname) { this->surname = surname; }
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Client>> Client::readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh) { /////

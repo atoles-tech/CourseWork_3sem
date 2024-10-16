@@ -19,6 +19,8 @@ public:
 	static string getPassword(string str); // Ввод пароля(Символы закрыты символом *)
 	static bool checkString(string str); // Проверка строки на ввод неккоректных символов
 	static bool checkName(string name); // Проверка имени или фамилии на неккоретные символы
+	static int getIntToSize(int size); // Ввод числа входящему по размерам
+	static int getChoose(string str); // Выбор 1 или 0(да и нет)
 };
 
 #endif CONSOLEHELPER_H

@@ -18,7 +18,7 @@ void Menu::initMenu() {
 			Menu::authorize();
 			break;
 		case 2:
-			Menu::registr();
+			Menu::registr(0);
 			break;
 		case 3:
 			return;
@@ -57,18 +57,14 @@ void Menu::adminMenu(string name) {
 		cout << "Меню админа!" << endl;
 		cout << "1.Управление учетными записями" << endl;
 		cout << "2.Управление данными СТО" << endl;
-		cout << "3.Управление своими данными, как механика" << endl;
 		cout << "0.Выйти из аккаунта" << endl;
-		int input = ConsoleHelper::getOneInt("0123");
+		int input = ConsoleHelper::getOneInt("012");
 		switch (input) {
 		case 1:
 			Menu::adminMenuEditAccount(name);
 			break;
 		case 2:
 			//Menu::adminMenuEditData(name);
-			break;
-		case 3:
-			//Menu::adminMenuEditSelf(name);
 			break;
 		case 0:
 			return;
@@ -79,30 +75,81 @@ void Menu::adminMenu(string name) {
 }
 
 void Menu::adminMenuEditAccount(string name) {
+	vector<User> users;
+	int index;
+
 	while (true) {
-		cout << "1.Добавить запись" << endl;
-		cout << "2.Изменить запись" << endl;
-		cout << "3.Удалить запись" << endl;
-		cout << "4.Просмотр записей" << endl;
+		system("cls");
+		cout << "1.Добавить аккаунт" << endl;
+		cout << "2.Изменить аккаунт" << endl;
+		cout << "3.Удалить аккаунт" << endl;
+		cout << "4.Просмотр аккаунт" << endl;
 		cout << "5.Изменить доступ" << endl;
 		cout << "0.Обратно в меню" << endl;
 		int input = ConsoleHelper::getOneInt("012345");
 		switch (input) {
 		case 1:
+			cout << "Введите роль для аккаунта(0 - клиент, 1 - механик, 2 - администратор): ";
+			registr(ConsoleHelper::getOneInt("012"));
+			cout << "Аккаунт зарегистрирован" << endl;
+			User::writeAllUsers(users);
 			break;
 		case 2:
+			users = User::showUsers();
+			cout << "Введите номер аккаунта: ";
+			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			users[index] = changeUser(users, users[index]);
+			cout << "Изменения приняты" << endl;
+			User::writeAllUsers(users);
 			break;
 		case 3:
+			users = User::showUsers();
+			cout << "Введите номер аккаунта: ";
+			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			if (users[index].getLogin() == name) {
+				cout << "Вы не можете удалить себя" << endl;
+				break;
+			}
+			for (shared_ptr<Client> c :ServiceStation::getInstance().getClients()) {
+				if (c->getLogin() == users[index].getLogin()) {
+					c->setLogin(c->getLogin() + "(del)");
+					break;
+				}
+			}
+			for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+				if (r->getClient() == users[index].getLogin()) {
+					r->setClient(r->getClient() + "(del)");
+				}
+			}
+			users.erase(users.begin() + index);
+			User::writeAllUsers(users);
 			break;
 		case 4:
+			User::showUsers();
 			break;
 		case 5:
+			users = User::showUsers();
+			cout << "Введите номер аккаунта: ";
+			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			if (users[index].getLogin() == name) {
+				cout << "Вы не можете изменять свой доступ" << endl;
+				break;
+			}
+			if (!users[index].getAccess()) {
+				users[index].setAccess(true);
+			}
+			else {
+				users[index].setAccess(false);
+			}
+			cout << "Доступ изменен" << endl;
+			User::writeAllUsers(users);
 			break;
 		case 0:
-			break;
+			return;
 		}
+		system("pause");
 	}
-}
+} 
 
 //----------------------------------------------------------------------------------------//
 
@@ -119,7 +166,8 @@ void Menu::authorize() {
 		return;
 	}
 
-	string password = ConsoleHelper::readString("Введите пароль: ");
+	string password = ConsoleHelper::getPassword("Введите пароль: ");
+	cout << endl;
 	long long int hash = Hash::getHash(password, user.getSalt());
 
 	if(hash != user.getHash()){
@@ -148,12 +196,12 @@ void Menu::authorize() {
 	}
 }
 
-void Menu::registr() {
+void Menu::registr(int role) {
 	system("cls");
 
 	vector<User> users = User::readUsers();
 
-	string login = ConsoleHelper::readString("Введите имя: ");
+	string login = ConsoleHelper::readString("Введите логин: ");
 
 	if (!ConsoleHelper::checkString(login)) {
 		cout << "Неккоректный формат логина!" << endl;
@@ -175,7 +223,7 @@ void Menu::registr() {
 
 	long long int hash = Hash::getHash(password, salt);
 
-	User user(login, hash, false, salt, false);
+	User user(login, hash, role, salt, false);
 
 	User::writeUser(user);
 }
@@ -256,4 +304,48 @@ shared_ptr<Mechanic> Menu::inputMechanic(string name) {
 	Mechanic::writeOneFile(m);
 
 	return m;
+}
+
+User Menu::changeUser(vector<User> users, User user) {
+	while (true) {
+		system("cls");
+		cout << "Меню изменений:" << endl;
+		cout << "Логин: " << user.getLogin() << endl;
+		cout << "Роль: " << (user.getRole() == 0 ? "Клиент" : (user.getRole() == 1 ? "Механик" : "Админ")) << endl;
+		cout << "Доступ: " << (user.getAccess() == true ? "Доступ разрешен" : "Доступ запрещен") << endl;
+
+		cout << "1.Изменить логин" << endl;
+		cout << "2.Изменить пароль" << endl;
+		cout << "0.Выйти и сохранить изменения" << endl;
+
+		int input = ConsoleHelper::getOneInt("012");
+
+		if (input == 0) {
+			break;
+		}
+		else if (input == 1) {
+			string login = ConsoleHelper::readString("Введите логин: ");
+			if (User::getUser(users, login).getLogin() != "-") {
+				cout << "Пользователь с таким логином существует!" << endl;
+			}
+			else {
+				for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
+					if (m->getLogin() == user.getLogin()) {
+						m->setLogin(login);
+						break;
+					}
+				}
+				user.setLogin(login);
+			}
+		}
+		else {
+			string password = ConsoleHelper::getPassword("Введите пароль: ");
+			string salt = Hash::generateSalt();
+
+			user.setSalt(salt);
+			user.setHash(Hash::getHash(password, salt));
+		}
+	}
+
+	return user;
 }

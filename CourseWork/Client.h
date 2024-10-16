@@ -38,6 +38,9 @@ public:
 
 	/*Сеттеры*/
 	void setEmail(string email);
+	void setLogin(string login);
+	void setName(string name);
+	void setSurname(string surname);
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Client>> readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh);

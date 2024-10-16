@@ -24,6 +24,10 @@ vector<shared_ptr<Request>> Mechanic::getRequests() { return requests; }
 
 /*Сеттеры*/
 void Mechanic::setStatus(bool status) { this->isBusy = status; }
+void Mechanic::setLogin(string login) { this->login = login; }
+void Mechanic::setName(string name) { this->name = name; }
+void Mechanic::setSurname(string surname) { this->surname = surname; }
+void Mechanic::setEmail(string email) { this->email = email; }
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Mechanic>> Mechanic::readFile(vector<shared_ptr<Request>> req) {

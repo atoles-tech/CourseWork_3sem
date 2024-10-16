@@ -37,6 +37,10 @@ public:
 
 	/*Сеттеры*/
 	void setStatus(bool status);
+	void setLogin(string login);
+	void setName(string name);
+	void setSurname(string surname);
+	void setEmail(string email);
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Mechanic>> readFile(vector<shared_ptr<Request>> req);

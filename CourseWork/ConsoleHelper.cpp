@@ -107,7 +107,7 @@ string ConsoleHelper::getPassword(string str) {
 
 bool ConsoleHelper::checkString(string str) {
 	for (char c : str) {
-		if (c == ';') {
+		if (c == ';' || c == '(' || c == ')') {
 			return false;
 		}
 	}
@@ -122,4 +122,24 @@ bool ConsoleHelper::checkName(string name) {
 		}
 	}
 	return true;
+}
+
+int ConsoleHelper::getIntToSize(int size) {
+	int input;
+	do {
+		input = readInt("");
+		if (input >= 1 && input <= size) {
+			break;
+		}
+		else {
+			cout << "Данного пользователя нет! Повторите попытку: " << endl;
+		}
+	} while (true);
+	return input;
+}
+
+int ConsoleHelper::getChoose(string str) {
+	cout << str;
+	int input = getOneInt("01");
+	return input;
 }
