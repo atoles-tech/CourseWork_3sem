@@ -4,6 +4,7 @@
 #include <iostream>
 #include <vector>
 #include <memory>
+#include <iomanip>
 #include "Vehicle.h"
 #include "Client.h"
 #include "Service.h"
@@ -29,6 +30,14 @@ public:
 	void addRequest(shared_ptr<Request> r);
 	void addMechanic(shared_ptr<Mechanic> m);
 
+	/*Вывод на экран*/
+	void showClient();
+	void showVehicle();
+	void showMechanic();
+	void showService();
+	void showRequest();
+
+	/*Инициализация*/
 	void init();
 
 	/*Сохранение*/

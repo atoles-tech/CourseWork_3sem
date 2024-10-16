@@ -18,9 +18,18 @@ Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shar
 	bill = Bill(sum, false);
 }
 
+Request::Request() {
+	this->id = -1;
+	this->client = "N/A";
+	this->mechanic = "N/A";
+	this->status = -1;
+}
+
 /*Геттеры*/
 int Request::getId() { return id; }
+int Request::getStatus() { return status; }
 string Request::getClient() { return client; }
+string Request::getMechanic() { return mechanic; }
 shared_ptr<Vehicle> Request::getVehicle() { return vehicle; }
 Bill Request::getBill() { return bill; }
 vector<shared_ptr<Service>> Request::getServices() { return services; }
@@ -96,5 +105,50 @@ void Request::writeFile(vector<shared_ptr<Request>> requests) {
 		}
 
 		f << endl;
+	}
+}
+
+void Request::writeOneFile(shared_ptr<Request> r) {
+	ofstream f(filename, ios::binary | std::ios::app);
+	
+	f << r->id << ";"
+		<< r->client << ";"
+		<< r->mechanic << ";"
+		<< r->vehicle->getNumber() << ";"
+		<< r->status << endl;
+
+	for (shared_ptr<Service> s : r->services) {
+		f << s->getServiceId() << ";";
+	}
+
+	f << endl;
+	
+}
+
+void Request::showRequest(vector<shared_ptr<Request>> requests) {
+	if (requests.size() == 0) {
+		cout << "Заказов нет!" << endl;
+		return;
+	}
+
+	cout << setw(7) << "Номер" << "|"
+		<< setw(15) << "Клиент" << "|"
+		<< setw(15) << "Механик" << "|"
+		<< setw(15) << "Номер авто" << "|"
+		<< setw(10) << "Стоимость" << "|" 
+		<< setw(20) << "Статус" << "|" 
+		<< setw(20) << "Статус оплаты" << "|" << endl;
+
+	cout << string(109, '=') << endl;
+
+	int i = 1;
+	for (shared_ptr<Request> r : requests) {
+		cout << setw(7) << i++ << "|"
+			<< setw(15) << r->getClient() << "|"
+			<< setw(15) << r->getMechanic() << "|"
+			<< setw(15) << r->getVehicle()->getNumber() << "|"
+			<< setw(10) << r->getBill().getSum() << "|"
+			<< setw(20) << (r->getStatus() == 0 ? "Ожидает" : (r->getStatus() == 1 ? "Ремонтируется" : "Отремонтирован")) << "|" 
+			<< setw(20) << (r->getBill().getStatus() == true?"Оплачен":"Ожидает оплаты") << "|" << endl;
 	}
 }

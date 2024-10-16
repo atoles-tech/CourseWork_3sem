@@ -24,7 +24,19 @@ int main() {
 	srand(time(NULL));
 
 	ServiceStation::getInstance().init();
+#if 1
 
+	ServiceStation::getInstance().showClient();
+	cout << endl;
+	ServiceStation::getInstance().showVehicle();
+	cout << endl;
+	ServiceStation::getInstance().showMechanic();
+	cout << endl;
+	ServiceStation::getInstance().showService();
+	cout << endl;
+	ServiceStation::getInstance().showRequest();
+	system("pause");
+#endif
 #if 0
 	ServiceStation s = ServiceStation::getInstance();
 	s.init();

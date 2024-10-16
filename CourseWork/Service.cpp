@@ -9,6 +9,13 @@ Service::Service(int service_id, string name, double price, int time) {
 	this->time = time;
 }
 
+Service::Service() {
+	this->service_id = -1;
+	this->name = "";
+	this->price = -1;
+	this->time = -1;
+}
+
 /*Геттеры*/
 int Service::getServiceId() { return service_id; }
 string Service::getName() { return name; }
@@ -55,5 +62,29 @@ void Service::writeFile(vector<shared_ptr<Service>> services) {
 		  << s->name << ";"
 		  << s->price << ";"
 		  << s->time << endl;
+	}
+}
+
+void Service::showService(vector<shared_ptr<Service>> services) {
+	if (services.size() == 0) {
+		cout << "Услуг нет" << endl;
+		return;
+	}
+
+	cout << setw(7) << "Номер" << "|"
+		<< setw(7) << "ID" << "|"
+		<< setw(33) << "Название" << "|"
+		<< setw(15) << "Стоимость" << "|"
+		<< setw(15) << "Время(часы)" << "|" << endl;
+
+	cout << string(82, '=') << endl;
+
+	int i = 1;
+	for (shared_ptr<Service> s : services) {
+		cout << setw(7) << i++ << "|"
+			<< setw(7) << s->getServiceId() << "|"
+			<< setw(33) << s->getName() << "|"
+			<< setw(15) << s->getPrice() << "|"
+			<< setw(15) << s->getTime() << "|" << endl;
 	}
 }

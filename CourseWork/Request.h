@@ -29,10 +29,13 @@ private:
 	int status; // 0 - ожидает | 1 - ремонтируется | 2 - отремантирован
 public:
 	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status);
+	Request();
 
 	/*Геттеры*/
 	int getId();
+	int getStatus();
 	string getClient();
+	string getMechanic();
 	shared_ptr<Vehicle> getVehicle();
 	Bill getBill();
 	vector<shared_ptr<Service>> getServices();
@@ -46,6 +49,9 @@ public:
 	/*Чтение из файла + запись в файл*/
 	static vector<shared_ptr<Request>> readFile(vector<shared_ptr<Vehicle>> vehicles, vector<shared_ptr<Service>> services);
 	static void writeFile(vector<shared_ptr<Request>> requests);
+	static void writeOneFile(shared_ptr<Request> r);
+
+	static void showRequest(vector<shared_ptr<Request>> requests);
 };
 
 #endif // !REQUEST_H

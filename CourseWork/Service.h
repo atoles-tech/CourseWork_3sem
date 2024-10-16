@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include <iomanip>
 #include <fstream>
 #include "ConsoleHelper.h"
 
@@ -20,6 +21,7 @@ private:
 	int time; // в часах
 public:
 	Service(int service_id,string name, double price, int time);
+	Service();
 
 	/*Геттеры*/
 	int getServiceId();
@@ -36,6 +38,8 @@ public:
 	/*Чтение из файла + запись в файл*/
 	static vector<shared_ptr<Service>> readFile();
 	static void writeFile(vector<shared_ptr<Service>> services);
+
+	static void showService(vector<shared_ptr<Service>> services);
 };
 
 #endif // !SERVICE_H
