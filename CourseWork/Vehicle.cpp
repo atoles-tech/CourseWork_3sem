@@ -45,6 +45,11 @@ string Vehicle::getModel() { return model; }
 string Vehicle::getBrand() { return brand; }
 string Vehicle::getVIN() { return vin; }
 
+void Vehicle::setBrand(string brand) { this->brand = brand; }
+void Vehicle::setModel(string model) { this->model = model; }
+void Vehicle::setNumber(string number) { this->car_number = number; }
+void Vehicle::setVIN(string vin) { this->vin = vin; }
+
 vector<shared_ptr<Vehicle>> Vehicle::readFile() {
 	vector<shared_ptr<Vehicle>> vehicles;
 

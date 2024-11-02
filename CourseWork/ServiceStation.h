@@ -23,12 +23,20 @@ private:
 	vector<shared_ptr<Request>> requests;
 public:
 	static ServiceStation& getInstance();
-	
+
+	/*Добавление*/
 	void addVehicle(shared_ptr<Vehicle> v);
 	void addClient(shared_ptr<Client> c);
 	void addService(shared_ptr<Service> s);
 	void addRequest(shared_ptr<Request> r);
 	void addMechanic(shared_ptr<Mechanic> m);
+
+	/*Удаление*/
+	void delVehicle(int index);
+	void delClient(int index);
+	void delService(int index);
+	void delRequest(int index);
+	void delMechanic(int index);
 
 	/*Вывод на экран*/
 	void showClient();
@@ -48,11 +56,11 @@ public:
 	bool hasMechanic(string login);
 
 	/*Геттеры*/
-	vector<shared_ptr<Vehicle>> getVehicles();
-	vector<shared_ptr<Client>> getClients();
-	vector<shared_ptr<Service>> getServices();
-	vector<shared_ptr<Request>> getRequests();
-	vector<shared_ptr<Mechanic>> getMechanics();
+	vector<shared_ptr<Vehicle>>& getVehicles();
+	vector<shared_ptr<Client>>& getClients();
+	vector<shared_ptr<Service>>& getServices();
+	vector<shared_ptr<Request>>& getRequests();
+	vector<shared_ptr<Mechanic>>& getMechanics();
 private:
 	ServiceStation() {}
 };

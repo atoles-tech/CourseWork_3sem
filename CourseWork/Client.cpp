@@ -17,6 +17,9 @@ void Client::addRequest(shared_ptr<Request> request) {
 	requests.push_back(request);
 }
 
+void Client::delVehicle(int index) { vehicles.erase(vehicles.begin() + index); }
+void Client::delRequest(int index) { requests.erase(requests.begin() + index); }
+
 /*Геттеры*/
 string Client::getName() { return name; }
 string Client::getSurname() { return surname; }
@@ -125,4 +128,26 @@ void Client::writeOneFile(shared_ptr<Client> c) {
 		f << v->getNumber() << ";";
 	}
 	f << endl;
+}
+
+void Client::showClient(vector<shared_ptr<Client>> clients) {
+	if (clients.size() == 0) {
+		cout << "Клиентов нет!" << endl;
+		return;
+	}
+
+	cout << setw(7) << "Номер" << "|"
+		<< setw(15) << "Логин" << "|"
+		<< setw(20) << "Имя" << "|"
+		<< setw(20) << "Фамилия" << "|" << endl;
+
+	cout << string(66, '=') << endl;
+
+	int i = 1;
+	for (shared_ptr<Client> c : clients) {
+		cout << setw(7) << i++ << "|"
+			<< setw(15) << c->getLogin() << "|"
+			<< setw(20) << c->getName() << "|"
+			<< setw(20) << c->getSurname() << "|" << endl;
+	}
 }

@@ -10,7 +10,7 @@ Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shar
 	this->services = services;
 	this->status = status;
 
-	int sum = 0;
+	double sum = 0;
 	for (auto& s : services) {
 		sum += s->getPrice();
 	}
@@ -23,6 +23,20 @@ Request::Request() {
 	this->client = "N/A";
 	this->mechanic = "N/A";
 	this->status = -1;
+}
+
+void Request::delService(int index) { 
+	services.erase(index + services.begin()); 
+	double sum = 0;
+	for (auto& s : services) {
+		sum += s->getPrice();
+	}
+
+	bill = Bill(sum, status);
+}
+
+void Request::addService(shared_ptr<Service> s) {
+	services.push_back(s);
 }
 
 /*Геттеры*/

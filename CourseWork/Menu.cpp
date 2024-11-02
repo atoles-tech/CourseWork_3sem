@@ -150,33 +150,7 @@ void Menu::adminMenuEditAccount(string name) {
 		system("pause");
 	}
 } 
-/*
-2 Управление данными
-		2.1 Добавить запись
-			2.1.1 Добавить автомобиль клиенту
-			2.1.2 Добавить заказ
-			2.1.3 Добавить услугу
-			2.1.4 <- Назад
-		2.2 Изменение записей
-			2.2.1 Изменить автомобиль
-			2.2.2 Изменить заказ
-			2.2.3 Изменить услугу
-			2.2.4 <- Назад
-		2.3 Удаление записей
-			2.3.1 Удалить автомобиль
-			2.3.2 Удалить заказ
-			2.3.3 Удалить услугу
-			2.3.4 <- Назад
-		2.4 Просмотр записей
-			2.4.1 Просмотреть автомобиль
-			2.4.2 Просмотреть заказ
-			2.4.3 Просмотреть услугу
-			2.4.4 Просмотреть клиентов
-			2.4.5 Просмотреть механиков
-			2.4.6 Просмотреть чек определенного заказа
-			2.4.7 <- Назад
-		2.5 <- Обратно в меню *
-*/
+
 void Menu::adminMenuEditData(string name) {
 	while (true) {
 		system("cls");
@@ -185,19 +159,75 @@ void Menu::adminMenuEditData(string name) {
 		cout << "2.Изменение записей" << endl;
 		cout << "3.Удаление записей" << endl;
 		cout << "4.Просмотр записей" << endl;
+		cout << "5.Сортировать записи" << endl;
+		cout << "6.Поиск записей" << endl;
+		cout << "7.Назначить механика на заказ" << endl;
 		cout << "0.Обратно в меню" << endl;
-		int input = ConsoleHelper::getOneInt("01234");
+		int input = ConsoleHelper::getOneInt("01234567");
 		switch (input) {
 		case 1:
 			adminMenuEditDataAdd(name);
 			break;
 		case 2:
+			adminMenuEditDataEdit(name);
 			break;
 		case 3:
+			adminMenuEditDataDelete(name);
 			break;
 		case 4:
 			adminMenuEditDataShow(name);
 			break;
+		case 5:
+			adminMenuEditDataSort(name);
+			break;
+		case 6:
+			adminMenuEditDataSearch(name);
+			break;
+		case 7: {
+			vector<shared_ptr<Request>> r;
+			vector<shared_ptr<Mechanic>> m;
+			
+			for (shared_ptr<Request> req : ServiceStation::getInstance().getRequests()) {
+				if (req->getStatus() == 0) {
+					r.push_back(req);
+				}
+			}
+
+			if (r.size() == 0) {
+				cout << "Свободных заказов нет!" << endl;
+				system("pause");
+				break;
+			}
+
+			for (shared_ptr<Mechanic> mech : ServiceStation::getInstance().getMechanics()) {
+				if (!mech->getStatus()) {
+					m.push_back(mech);
+				}
+			}
+
+			if (m.size() == 0) {
+				cout << "Свободных механиков нет!" << endl;
+				system("pause");
+				break;
+			}
+
+			Request::showRequest(r);
+			cout << "Введите номер заказа, которому необходимо назначить заказ: ";
+			int inp_1 = ConsoleHelper::getIntToSize(r.size());
+
+			Mechanic::showMechanic(m);
+			cout << "Введите номер механика, который должен выполнить заказ: ";
+			int inp_2 = ConsoleHelper::getIntToSize(m.size());
+
+			r[inp_1 - 1]->setStatus(1);
+			r[inp_1 - 1]->setMechanic(m[inp_2 - 1]->getName());
+
+			m[inp_2 - 1]->setStatus(true);
+			ServiceStation::getInstance().saveAllData();
+			cout << "Заказу назначен механик!" << endl;
+			system("pause");
+			break;
+		}
 		case 0:
 			return;
 		}
@@ -266,6 +296,156 @@ void Menu::adminMenuEditDataAdd(string name) {
 	}
 	ServiceStation::getInstance().saveAllData();
 	system("pause");
+}
+
+void Menu::adminMenuEditDataEdit(string name) {
+	system("cls");
+	cout << "===Изменение===" << endl;
+	cout << "1.Изменить автомобиль" << endl;
+	cout << "2.Изменить заказ" << endl;
+	cout << "3.Изменить услугу" << endl;
+	cout << "0.Назад" << endl;
+	int input = ConsoleHelper::getOneInt("0123");
+
+	int temp, choose;
+
+	switch (input) {
+	case 1:
+		ServiceStation::getInstance().showVehicle();
+		if (ServiceStation::getInstance().getVehicles().size() == 0) {
+			cout << "Автомобилей нет!" << endl;
+		}
+		cout << "Введите номер услуги: ";
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getVehicles().size());
+		changeVehicle(ServiceStation::getInstance().getVehicles(), ServiceStation::getInstance().getVehicles()[temp - 1]);
+		break;
+	case 2:
+		ServiceStation::getInstance().showRequest();
+		if (ServiceStation::getInstance().getRequests().size() == 0) {
+			cout << "Заказов нет!" << endl;
+		}
+		cout << "Введите номер услуги: ";
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size());
+		changeRequest(ServiceStation::getInstance().getRequests(), ServiceStation::getInstance().getRequests()[temp - 1]);
+		break;
+	case 3:
+		ServiceStation::getInstance().showService();
+		if (ServiceStation::getInstance().getServices().size() == 0) {
+			cout << "Услуг нет!" << endl;
+		}
+		cout << "Введите номер услуги: ";
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
+		changeService(ServiceStation::getInstance().getServices(), ServiceStation::getInstance().getServices()[temp - 1]);
+		break;
+	case 0:
+		return;
+	}
+	ServiceStation::getInstance().saveAllData();
+}
+
+void Menu::adminMenuEditDataDelete(string name) {
+	system("cls");
+	cout << "===Удаление===" << endl;
+	cout << "1.Удалить автомобиль" << endl;
+	cout << "2.Удалить заказ" << endl;
+	cout << "3.Удалить услугу" << endl;
+	cout << "0.Назад" << endl;
+	int input = ConsoleHelper::getOneInt("0123");
+
+	int temp, choose;
+
+	switch (input) {
+	case 1:
+		cout << "ВНИМАНИЕ!" << endl;
+		cout << "При удалении автомобиля учавствовавшего в заказе, заказ будет удален" << endl;
+		ServiceStation::getInstance().showVehicle();
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getVehicles().size());
+		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
+		if (choose == 0) {
+			system("pause");
+			break;
+		}
+		for (int i = 0; i < ServiceStation::getInstance().getRequests().size();i++) {
+			if (ServiceStation::getInstance().getRequests()[i]->getVehicle()->getNumber() 
+				== ServiceStation::getInstance().getVehicles()[temp - 1]->getNumber()) {
+				ServiceStation::getInstance().delRequest(i);
+				i--;
+			}
+		}
+		for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
+			for (int i = 0; i < m->getRequests().size(); i++) {
+				if (m->getRequests()[i]->getStatus() == 1 && m->getRequests()[i]->getVehicle()->getNumber() == ServiceStation::getInstance().getVehicles()[temp-1]->getNumber()) {
+					m->setStatus(false);
+				}
+				if (m->getRequests()[i]->getVehicle()->getNumber() == ServiceStation::getInstance().getVehicles()[temp - 1]->getNumber()) {
+					m->delRequest(i);
+					i--;
+				}
+			}
+		}
+		for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+			for (int i = 0; i < c->getVehicles().size(); i++) {
+				if (c->getVehicles()[i]->getNumber() == ServiceStation::getInstance().getVehicles()[temp - 1]->getNumber()) {
+					c->delVehicle(i);
+				}
+			}
+			for (int i = 0; i < c->getRequests().size(); i++) {
+				if (c->getRequests()[i]->getVehicle()->getNumber() == ServiceStation::getInstance().getVehicles()[temp - 1]->getNumber()) {
+					c->delRequest(i);
+				}
+			}
+		}
+		ServiceStation::getInstance().delVehicle(temp - 1);
+		cout << "Автомобиль удален" << endl;
+		break;
+	case 2:
+		ServiceStation::getInstance().showRequest();
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size());
+		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
+		if (choose == 0) {
+			system("pause");
+			break;
+		}
+		for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+			for (int i = 0; i < c->getRequests().size();i++) {
+				if (c->getRequests()[i]->getId() == ServiceStation::getInstance().getRequests()[temp - 1]->getId()) {
+					c->delRequest(i);
+					i--;
+				}
+			}
+		}
+		for (shared_ptr<Mechanic> c : ServiceStation::getInstance().getMechanics()) {
+			for (int i = 0; i < c->getRequests().size(); i++) {
+				if (c->getRequests()[i]->getId() == ServiceStation::getInstance().getRequests()[temp - 1]->getId()) {
+					c->delRequest(i);
+					i--;
+				}
+			}
+		}
+		ServiceStation::getInstance().delRequest(temp - 1);
+		break;
+	case 3:
+		ServiceStation::getInstance().showService();
+		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
+		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
+		if (choose == 0) {
+			system("pause");
+			break;
+		}
+		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+			for (int i = 0; i < r->getServices().size(); i++) {
+				if (r->getServices()[i]->getServiceId() == ServiceStation::getInstance().getServices()[temp - 1]->getServiceId()) {
+					r->delService(i);
+				}
+			}
+		}
+		ServiceStation::getInstance().delService(temp - 1);
+		cout << "Услуга удалена" << endl;
+		break;
+	case 0:
+		return;
+	}
+	ServiceStation::getInstance().saveAllData();
 }
 
 void Menu::adminMenuEditDataShow(string name) {
@@ -338,12 +518,16 @@ void Menu::adminMenuEditDataShow(string name) {
 		shared_ptr<Request> req = ServiceStation::getInstance().getRequests()[n-1];
 		cout << "ID: " << req->getId() << endl;
 		cout << "Клиент: " << req->getClient() << endl;
-		cout << "Механик: " << req->getMechanic() << endl << endl;
+		cout << "Механик: " << (req->getMechanic() == "N/A"?"Механик не назначен": req->getMechanic()) << endl << endl;
+
 		cout << "Автомобиль:" << endl;
 		cout << "Номер: " << req->getVehicle()->getNumber() << endl;
 		cout << "Марка: " << req->getVehicle()->getBrand() << endl;
 		cout << "Модель: " << req->getVehicle()->getModel() << endl;
-		cout << "VIN: " << req->getVehicle()->getVIN() << endl;
+		cout << "VIN: " << req->getVehicle()->getVIN() << endl << endl;
+
+		cout << "Услуги:" << endl;
+		Service::showService(req->getServices());
 		system("pause");
 		break;
 	}
@@ -366,6 +550,476 @@ void Menu::adminMenuEditDataShow(string name) {
 	case 0:
 		return;
 	}
+	ServiceStation::getInstance().saveAllData();
+}
+
+void Menu::adminMenuEditDataSort(string name) {
+	ServiceStation& s = ServiceStation::getInstance();
+	system("cls");
+	cout << "===Меню сортировки===" << endl;
+	cout << "1.Отсортировать автомобили" << endl;
+	cout << "2.Отсортировать заказы" << endl;
+	cout << "3.Отсортировать услуги" << endl;
+	cout << "4.Отсортировать механиков" << endl;
+	cout << "5.Отсортировать клиентов" << endl;
+	cout << "0.Назад" << endl;
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("012345");
+
+	switch (input) {
+	case 1:
+		if (s.getVehicles().size() < 2) {
+			cout << "Данных для сортировки недостаточно" << endl;
+		}
+		system("cls");
+		cout << "===Методы сортировки авто===" << endl;
+		cout << "1.Сортировать по автомобильному номеру(A-Z)" << endl;
+		cout << "2.Сортировать по автомобильному номеру(Z-A)" << endl;
+		cout << "3.Сортировать по марке(A-Z)" << endl;
+		cout << "4.Сортировать по марке(Z-А)" << endl;
+		cout << "5.Сортировать по моделе(A-Z)" << endl;
+		cout << "6.Сортировать по моделе(Z-А)" << endl;
+		cout << "7.Сортировать по VIN(A-Z)" << endl;
+		cout << "8.Сортировать по VIN(Z-A)" << endl;
+		cout << "Выберите метод сортировки:";
+
+		switch (ConsoleHelper::getOneInt("12345678")) {
+		case 1:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getNumber() < b->getNumber(); }); break;
+		case 2:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getNumber() > b->getNumber(); }); break;
+		case 3:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getBrand() < b->getBrand(); }); break;
+		case 4:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getBrand() > b->getBrand(); }); break;
+		case 5:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getModel() < b->getModel(); }); break;
+		case 6:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getModel() > b->getModel(); }); break;
+		case 7:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getVIN() < b->getVIN(); }); break;
+		case 8:sort(s.getVehicles().begin(), s.getVehicles().end(), [](const shared_ptr<Vehicle>& a, const shared_ptr<Vehicle>& b) {return a->getVIN() > b->getVIN(); }); break;
+		}
+
+		Vehicle::writeFile(s.getVehicles());
+		cout << "Данные отсортированы и сохранены!" << endl;
+
+		break;
+	case 2:
+		if (s.getRequests().size() < 2) {
+			cout << "Данных для сортировки недостаточно" << endl;
+		}
+		system("cls");
+		cout << "===Методы сортировки заказов===" << endl;
+		cout << "1.Сортировать по ID(1-9)" << endl;
+		cout << "2.Сортировать по ID(9-1)" << endl;
+		cout << "3.Сортировать по клиенту(A-Z)" << endl;
+		cout << "4.Сортировать по клиенту(Z-А)" << endl;
+		cout << "5.Сортировать по механику(A-Z)" << endl;
+		cout << "6.Сортировать по механику(Z-А)" << endl;
+		cout << "Выберите метод сортировки:";
+
+		switch (ConsoleHelper::getOneInt("123456")) {
+		case 1:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getId() < b->getId(); }); break;
+		case 2:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getId() > b->getId(); }); break;
+		case 3:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getClient() < b->getClient(); }); break;
+		case 4:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getClient() > b->getClient(); }); break;
+		case 5:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getMechanic() < b->getMechanic(); }); break;
+		case 6:sort(s.getRequests().begin(), s.getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getMechanic() > b->getMechanic(); }); break;
+		}
+
+		Request::writeFile(s.getRequests());
+		cout << "Данные отсортированы и сохранены!" << endl;
+		break;
+	case 3:
+		if (s.getServices().size() < 2) {
+			cout << "Данных для сортировки недостаточно" << endl;
+		}
+		system("cls");
+		cout << "===Методы сортировки услуг===" << endl;
+		cout << "1.Сортировать по ID(1-9)" << endl;
+		cout << "2.Сортировать по ID(9-1)" << endl;
+		cout << "3.Сортировать по названию(A-Z)" << endl;
+		cout << "4.Сортировать по названию(Z-А)" << endl;
+		cout << "5.Сортировать по цене(1-9)" << endl;
+		cout << "6.Сортировать по цене(9-1)" << endl;
+		cout << "7.Сортировать по времени(1-9)" << endl;
+		cout << "8.Сортировать по аремени(9-1)" << endl;
+		cout << "Выберите метод сортировки:";
+
+		switch (ConsoleHelper::getOneInt("12345678")) {
+		case 1:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getServiceId() < b->getServiceId(); }); break;
+		case 2:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getServiceId() > b->getServiceId(); }); break;
+		case 3:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getName() < b->getName(); }); break;
+		case 4:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getName() > b->getName(); }); break;
+		case 5:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getPrice() < b->getPrice(); }); break;
+		case 6:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getPrice() > b->getPrice(); }); break;
+		case 7:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getTime() < b->getTime(); }); break;
+		case 8:sort(s.getServices().begin(), s.getServices().end(), [](const shared_ptr<Service>& a, const shared_ptr<Service>& b) {return a->getTime() > b->getTime(); }); break;
+		}
+
+		Service::writeFile(s.getServices());
+		cout << "Данные отсортированы и сохранены!" << endl;
+		break;
+	case 4:
+		if (s.getMechanics().size() < 2) {
+			cout << "Данных для сортировки недостаточно" << endl;
+		}
+		system("cls");
+		cout << "===Методы сортировки механиков===" << endl;
+		cout << "1.Сортировать по фамилии(A-Z)" << endl;
+		cout << "2.Сортировать по фамилии(Z-A))" << endl;
+		cout << "3.Сортировать по email(A-Z)" << endl;
+		cout << "4.Сортировать по email(Z-А)" << endl;
+		cout << "5.Сортировать по занятости(Не занят - занят)" << endl;
+		cout << "6.Сортировать по занятости(Занят - не занят)" << endl;
+		cout << "Выберите метод сортировки:";
+
+		switch (ConsoleHelper::getOneInt("123456")) {
+		case 1:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getSurname() < b->getSurname(); }); break;
+		case 2:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getSurname() > b->getSurname(); }); break;
+		case 3:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getEmail() < b->getEmail(); }); break;
+		case 4:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getEmail() > b->getEmail(); }); break;
+		case 5:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getStatus() < b->getStatus(); }); break;
+		case 6:sort(s.getMechanics().begin(), s.getMechanics().end(), [](const shared_ptr<Mechanic>& a, const shared_ptr<Mechanic>& b) {return a->getStatus() > b->getStatus(); }); break;
+		}
+
+		Mechanic::writeFile(s.getMechanics());
+		cout << "Данные отсортированы и сохранены!" << endl;
+		break;
+	case 5:
+		if (s.getClients().size() < 2) {
+			cout << "Данных для сортировки недостаточно" << endl;
+		}
+		system("cls");
+		cout << "===Методы сортировки клиентов===" << endl;
+		cout << "1.Сортировать по фамилии(A-Z)" << endl;
+		cout << "2.Сортировать по фамилии(Z-A))" << endl;
+		cout << "3.Сортировать по email(A-Z)" << endl;
+		cout << "4.Сортировать по email(Z-А)" << endl;
+		cout << "Выберите метод сортировки:";
+
+		switch (ConsoleHelper::getOneInt("1234")) {
+		case 1:sort(s.getClients().begin(), s.getClients().end(), [](const shared_ptr<Client>& a, const shared_ptr<Client>& b) {return a->getSurname() < b->getSurname(); }); break;
+		case 2:sort(s.getClients().begin(), s.getClients().end(), [](const shared_ptr<Client>& a, const shared_ptr<Client>& b) {return a->getSurname() > b->getSurname(); }); break;
+		case 3:sort(s.getClients().begin(), s.getClients().end(), [](const shared_ptr<Client>& a, const shared_ptr<Client>& b) {return a->getEmail() < b->getEmail(); }); break;
+		case 4:sort(s.getClients().begin(), s.getClients().end(), [](const shared_ptr<Client>& a, const shared_ptr<Client>& b) {return a->getEmail() > b->getEmail(); }); break;
+		}
+
+		Client::writeFile(s.getClients());
+		cout << "Данные отсортированы и сохранены!" << endl;
+		break;
+	case 0:return;
+	}
+	system("pause");
+}
+
+void Menu::adminMenuEditDataSearch(string name) {
+	system("cls");
+	cout << "===Меню поиска===" << endl;
+	cout << "1.Найти автомобиль" << endl;
+	cout << "2.Найти заказ" << endl;
+	cout << "3.Найти услугу" << endl;
+	cout << "4.Найти механика" << endl;
+	cout << "5.Найти клиента" << endl;
+	cout << "0.Назад" << endl;
+
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("012345");
+
+	switch (input) {
+	case 1:
+		adminMenuEditDataSearchVehicle();
+		break;
+	case 2:
+		adminMenuEditDataSearchRequest();
+		break;
+	case 3:
+		adminMenuEditDataSearchService();
+		break;
+	case 4:
+		adminMenuEditDataSearchMechanic();
+		break;
+	case 5:
+		adminMenuEditDataSearchClient();
+		break;
+	}
+
+	if (input == 0) {
+		return;
+	}
+
+	system("pause");
+}
+
+void Menu::adminMenuEditDataSearchVehicle() {
+	system("cls");
+	cout << "===Меню поиска автомобиля===" << endl;
+	cout << "1.Поиск по номеру" << endl;
+	cout << "2.Поиск по марке" << endl;
+	cout << "3.Поиск по моделе" << endl;
+	
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("123");
+
+	vector<shared_ptr<Vehicle>> vehicles;
+
+	string search;
+
+	switch (input) {
+	case 1:
+		search = ConsoleHelper::readString("Введите номер автомобиля: ");
+		
+		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
+			if (v->getNumber() == search) {
+				vehicles.push_back(v);
+				break;
+			}
+		}
+
+		break;
+	case 2:
+		search = ConsoleHelper::readString("Введите марку автомобиля: ");
+
+		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
+			if (v->getBrand() == search) {
+				vehicles.push_back(v);
+			}
+		}
+
+		break;
+	case 3:
+		search = ConsoleHelper::readString("Введите модель автомобиля: ");
+
+		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
+			if (v->getModel() == search) {
+				vehicles.push_back(v);
+			}
+		}
+
+		break;
+	}
+
+	if (vehicles.size() == 0) {
+		cout << "Автомобилей не найдено!" << endl;
+	}
+
+	Vehicle::showVehicle(vehicles);
+}
+
+void Menu::adminMenuEditDataSearchRequest() {
+	system("cls");
+	cout << "===Меню поиска заказов===" << endl;
+	cout << "1.Поиск по ID" << endl;
+	cout << "2.Поиск по механику" << endl;
+	cout << "3.Поиск по клиенту" << endl;
+
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("123");
+
+	vector<shared_ptr<Request>> requests;
+
+	string search;
+	int id_search;
+
+	switch (input) {
+	case 1:
+		id_search = ConsoleHelper::readInt("Введите ID: ");
+
+		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+			if (r->getId() == id_search) {
+				requests.push_back(r);
+				break;
+			}
+		}
+
+		break;
+	case 2:
+		search = ConsoleHelper::readString("Введите логин механика: ");
+
+		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+			if (r->getMechanic() == search) {
+				requests.push_back(r);
+			}
+		}
+
+		break;
+	case 3:
+		search = ConsoleHelper::readString("Введите логин клиента: ");
+
+		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+			if (r->getClient() == search) {
+				requests.push_back(r);
+			}
+		}
+
+		break;
+	}
+
+	if (requests.size() == 0) {
+		cout << "Заказов не найдено!" << endl;
+	}
+
+	Request::showRequest(requests);
+}
+
+void Menu::adminMenuEditDataSearchService() {
+	system("cls");
+	cout << "===Меню поиска услуг===" << endl;
+	cout << "1.Поиск по ID" << endl;
+	cout << "2.Поиск по названию" << endl;
+	cout << "3.Поиск по времени" << endl;
+
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("123");
+
+	vector<shared_ptr<Service>> services;
+
+	string search;
+	int id_search;
+
+	switch (input) {
+	case 1:
+		id_search = ConsoleHelper::readInt("Введите ID: ");
+
+		for (shared_ptr<Service> s : ServiceStation::getInstance().getServices()) {
+			if (s->getServiceId() == id_search) {
+				services.push_back(s);
+				break;
+			}
+		}
+
+		break;
+	case 2:
+		search = ConsoleHelper::readString("Введите название услуги: ");
+
+		for (shared_ptr<Service> s : ServiceStation::getInstance().getServices()) {
+			if (s->getName() == search) {
+				services.push_back(s);
+			}
+		}
+
+		break;
+	case 3:
+		id_search = ConsoleHelper::readInt("Введите время выполнения услуги: ");
+
+		for (shared_ptr<Service> s : ServiceStation::getInstance().getServices()) {
+			if (s->getTime() == id_search) {
+				services.push_back(s);
+			}
+		}
+
+		break;
+	}
+
+	if (services.size() == 0) {
+		cout << "Заказов не найдено!" << endl;
+	}
+
+	Service::showService(services);
+}
+void Menu::adminMenuEditDataSearchMechanic() {
+	system("cls");
+	cout << "===Меню поиска механиков===" << endl;
+	cout << "1.Поиск по логину" << endl;
+	cout << "2.Поиск по фамилии" << endl;
+	cout << "3.Поиск по занятости" << endl;
+
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("123");
+
+	vector<shared_ptr<Mechanic>> mechanics;
+
+	string search;
+	int id_search;
+
+	switch (input) {
+	case 1:
+		search = ConsoleHelper::readString("Введите логин: ");
+
+		for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
+			if (m->getLogin() == search) {
+				mechanics.push_back(m);
+				break;
+			}
+		}
+
+		break;
+	case 2:
+		search = ConsoleHelper::readString("Введите фамилию: ");
+
+		for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
+			if (m->getSurname() == search) {
+				mechanics.push_back(m);
+			}
+		}
+
+		break;
+	case 3:
+		cout << "Вы желаете найти занятых(1) или свободных(0)?" << endl;
+		cout << "Ваш выбор: ";
+
+		id_search = ConsoleHelper::getOneInt("01");
+
+		for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
+			if (m->getStatus() == true && id_search == 1) {
+				mechanics.push_back(m);
+			}
+			else if(m->getStatus() == false && id_search == 0){
+				mechanics.push_back(m);
+			}
+		}
+
+		break;
+	}
+
+	if (mechanics.size() == 0) {
+		cout << "Заказов не найдено!" << endl;
+	}
+
+	Mechanic::showMechanic(mechanics);
+}
+void Menu::adminMenuEditDataSearchClient() {
+	system("cls");
+	cout << "===Меню поиска клиентов===" << endl;
+	cout << "1.Поиск по логину" << endl;
+	cout << "2.Поиск по фамилии" << endl;
+
+	cout << "Выберите пункт меню:";
+
+	int input = ConsoleHelper::getOneInt("12");
+
+	vector<shared_ptr<Client>> clients;
+
+	string search;
+
+	switch (input) {
+	case 1:
+		search = ConsoleHelper::readString("Введите логин: ");
+
+		for (shared_ptr<Client> m : ServiceStation::getInstance().getClients()) {
+			if (m->getLogin() == search) {
+				clients.push_back(m);
+				break;
+			}
+		}
+
+		break;
+	case 2:
+		search = ConsoleHelper::readString("Введите фамилию: ");
+
+		for (shared_ptr<Client> m : ServiceStation::getInstance().getClients()) {
+			if (m->getSurname() == search) {
+				clients.push_back(m);
+			}
+		}
+
+		break;
+	}
+	if (clients.size() == 0) {
+		cout << "Заказов не найдено!" << endl;
+	}
+
+	Client::showClient(clients);
 }
 
 //----------------------------------------------------------------------------------------//
@@ -627,7 +1281,7 @@ shared_ptr<Service> Menu::inputService() {
 User Menu::changeUser(vector<User> users, User user) {
 	while (true) {
 		system("cls");
-		cout << "Меню изменений:" << endl;
+		cout << "Меню изменений пользователя:" << endl;
 		cout << "Логин: " << user.getLogin() << endl;
 		cout << "Роль: " << (user.getRole() == 0 ? "Клиент" : (user.getRole() == 1 ? "Механик" : "Админ")) << endl;
 		cout << "Доступ: " << (user.getAccess() == true ? "Доступ разрешен" : "Доступ запрещен") << endl;
@@ -666,4 +1320,223 @@ User Menu::changeUser(vector<User> users, User user) {
 	}
 
 	return user;
+}
+
+void Menu::changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicle> vehicle) {
+	while (true) {
+		system("cls");
+		cout << "Меню изменений автомобиля:" << endl;
+		cout << "Марка: " << vehicle->getBrand() << endl;
+		cout << "Модель: " << vehicle->getModel() << endl;
+		cout << "Номер: " << vehicle->getNumber() << endl;
+		cout << "VIN: " << vehicle->getVIN() << endl;
+
+		cout << "1.Изменить марку" << endl;
+		cout << "2.Изменить модель" << endl;
+		cout << "3.Изменить номер" << endl;
+		cout << "4.Изменить VIN" << endl;
+		cout << "0.Выйти" << endl;
+
+		int input = ConsoleHelper::getOneInt("01234");
+
+		string tmp;
+		bool t = false;
+		switch (input) {
+		case 1:
+			tmp = ConsoleHelper::readString("Введите новую марку: ");
+			if (ConsoleHelper::checkString(tmp) == false) {
+				cout << "Неверный формат строки!" << endl;
+				break;
+			}
+			vehicle->setBrand(tmp);
+			break;
+		case 2:
+			tmp = ConsoleHelper::readString("Введите новую модель: ");
+			if (ConsoleHelper::checkString(tmp) == false) {
+				cout << "Неверный формат строки!" << endl;
+				break;
+			}
+			vehicle->setModel(tmp);
+			break;
+		case 3:
+			tmp = ConsoleHelper::readString("Введите новый номер: ");
+			if (ConsoleHelper::checkString(tmp) == false) {
+				cout << "Неверный формат строки!" << endl;
+				break;
+			}
+			vehicle->setNumber(tmp);
+			break;
+		case 4:
+			tmp = ConsoleHelper::readString("Введите новый VIN: ");
+			for (shared_ptr<Vehicle> v : vehicles) {
+				if(v->getVIN() == tmp){
+					t = true;
+				}
+			}
+			if (ConsoleHelper::checkString(tmp) == false) {
+				cout << "Неверный формат строки!" << endl;
+				break;
+			}
+			if (!t) {
+				vehicle->setVIN(tmp);
+			}
+			else {
+				cout << "Автомобиль с данным VIN уже существует" << endl;
+			}
+			break;
+		}
+
+		if (input == 0) {
+			return;
+		}
+		system("pause");
+	}
+}
+
+void Menu::changeRequest(vector<shared_ptr<Request>> requests, shared_ptr<Request> req) {
+	while (true) {
+		system("cls");
+		cout << "Меню изменений заказа:" << endl;
+		cout << "ID: " << req->getId() << endl;
+		cout << "Клиент: " << req->getClient() << endl;
+		cout << "Механик: " << (req->getMechanic() == "N/A" ? "Механик не назначен" : req->getMechanic()) << endl << endl;
+
+		cout << "Автомобиль:" << endl;
+		cout << "Номер: " << req->getVehicle()->getNumber() << endl;
+		cout << "Марка: " << req->getVehicle()->getBrand() << endl;
+		cout << "Модель: " << req->getVehicle()->getModel() << endl;
+		cout << "VIN: " << req->getVehicle()->getVIN() << endl << endl;
+
+		cout << "Услуги:" << endl;
+		Service::showService(req->getServices());
+
+		cout << "1.Изменить ID" << endl;
+		cout << "2.Добавить услугу" << endl;
+		cout << "3.Удалить услугу" << endl;
+		cout << "0.Выйти" << endl;
+
+		int input = ConsoleHelper::getOneInt("0123");
+
+		int tmp;
+		bool t = false;
+		switch (input) {
+		case 1:
+			tmp = ConsoleHelper::readInt("Введите новый ID: ");
+			for (shared_ptr<Request> r: requests) {
+				if (r->getId() == tmp) {
+					t = true;
+				}
+			}
+			if (!t) {
+				req->setId(tmp);
+				cout << "ID изменен" << endl;
+			}
+			else {
+				cout << "Данный ID уже существует!" << endl;
+			}
+			break;
+		case 2:
+			ServiceStation::getInstance().showService();
+			if (ServiceStation::getInstance().getServices().size() == 0) {
+				cout << "Услуг нет!" << endl;
+				break;
+			}
+			cout << "Введите услугу которую вы желаете добавить: ";
+			tmp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
+			for (shared_ptr<Service> s : req->getServices()) {
+				if (s->getServiceId() == ServiceStation::getInstance().getServices()[tmp - 1]->getServiceId()) {
+					cout << "Данная услуга уже добавлена" << endl;
+					t = true;
+				}
+			}
+			if (!t) {
+				req->addService(ServiceStation::getInstance().getServices()[tmp - 1]);
+				cout << "Новая услуга добавлена!" << endl;
+			}
+			break;
+		case 3:
+			Service::showService(req->getServices());
+			if (req->getServices().size() == 0) {
+				cout << "Услуг нет!" << endl;
+				break;
+			}
+			cout << "Введите услугу которую вы желаете добавить: ";
+			tmp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
+			req->delService(tmp - 1);
+			cout << "Услуга удалена!" << endl;
+			break;
+		}
+		if (input == 0) {
+			return;
+		}
+		system("pause");
+	}
+}
+
+void Menu::changeService(vector<shared_ptr<Service>> services, shared_ptr<Service> ser) {
+	while (true) {
+		system("cls");
+		cout << "Меню изменений услуг:" << endl;
+		cout << "ID: " << ser->getServiceId() << endl;
+		cout << "Название: " << ser->getName() << endl;
+		cout << "Стоимость: " << ser->getPrice() << endl;
+		cout << "Время: " << ser->getTime() << endl << endl;
+
+		cout << "1.Изменить ID" << endl;
+		cout << "2.Изменить название" << endl;
+		cout << "3.Изменить стоимость" << endl;
+		cout << "4.Изменить время" << endl;
+		cout << "0.Назад" << endl;
+
+		int input = ConsoleHelper::getOneInt("01234");
+
+		int tmp;
+		string temp;
+		double price;
+		bool t = false;
+
+		switch (input) {
+		case 1:
+			tmp = ConsoleHelper::readInt("Введите новый ID: ");
+			for (shared_ptr<Service> s : services) {
+				if (s->getServiceId() == tmp) {
+					t = true;
+					cout << "Услуга с данным ID уже существует!" << endl;
+				}
+			}
+			if (!t) {
+				ser->setServiceId(tmp);
+				cout << "Новый ID установлен" << endl;
+			}
+			break;
+		case 2:
+			temp = ConsoleHelper::readString("Введите новое название: ");
+			for (shared_ptr<Service> s : services) {
+				if (s->getName() == temp) {
+					t = true;
+					cout << "Услуга с данным названием уже существует!" << endl;
+				}
+			}
+			if (!t) {
+				ser->setName(temp);
+				cout << "Новое название установлено" << endl;
+			}
+			break;
+		case 3:
+			price = ConsoleHelper::readDouble("Введите новую стоимость: ");
+			ser->setPrice(price);
+			cout << "Новая стоимость установлена" << endl;
+			break;
+		case 4:
+			tmp = ConsoleHelper::readInt("Введите новое время: ");
+			ser->setTime(tmp);
+			cout << "Новое время установлено" << endl;
+			break;
+		}
+		
+		if (input == 0) {
+			return;
+		}
+	}
+
 }

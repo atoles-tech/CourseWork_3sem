@@ -26,27 +26,16 @@ void ServiceStation::addMechanic(shared_ptr<Mechanic> m) {
 	mechanics.push_back(m);
 }
 
+/*Удаление*/
+void ServiceStation::delVehicle(int index) { vehicles.erase(vehicles.begin() + index); }
+void ServiceStation::delClient(int index) { clients.erase(clients.begin() + index); }
+void ServiceStation::delService(int index) { services.erase(services.begin() + index); }
+void ServiceStation::delRequest(int index) { requests.erase(requests.begin() + index); }
+void ServiceStation::delMechanic(int index) { mechanics.erase(mechanics.begin() + index); }
+
 /*Вывод на экран*/
 void ServiceStation::showClient(){
-	if (clients.size() == 0) {
-		cout << "Клиентов нет!" << endl;
-		return;
-	}
-
-	cout << setw(7) << "Номер" << "|"
-		<< setw(15) << "Логин" << "|"
-		<< setw(20) << "Имя" << "|"
-		<< setw(20) << "Фамилия" << "|" << endl;
-
-	cout << string(66, '=') << endl;
-
-	int i = 1;
-	for (shared_ptr<Client> c : clients) {
-		cout << setw(7) << i++ << "|"
-			<< setw(15) << c->getLogin() << "|"
-			<< setw(20) << c->getName() << "|"
-			<< setw(20) << c->getSurname() << "|" << endl;
-	}
+	Client::showClient(clients);
 }
 
 void ServiceStation::showVehicle() {
@@ -54,25 +43,7 @@ void ServiceStation::showVehicle() {
 }
 
 void ServiceStation::showMechanic() {
-	if (mechanics.size() == 0) {
-		cout << "Механиков нет" << endl;
-		return;
-	}
-
-	cout << setw(7) << "Номер" << "|"
-		<< setw(15) << "Логин" << "|"
-		<< setw(20) << "Имя" << "|"
-		<< setw(20) << "Фамилия" << "|" << endl;
-
-	cout << string(66, '=') << endl;
-
-	int i = 1;
-	for (shared_ptr<Mechanic> m : mechanics) {
-		cout << setw(7) << i++ << "|"
-			<< setw(15) << m->getLogin() << "|"
-			<< setw(20) << m->getName() << "|"
-			<< setw(20) << m->getSurname() << "|" << endl;
-	}
+	Mechanic::showMechanic(mechanics);
 }
 
 void ServiceStation::showService() {
@@ -119,8 +90,8 @@ bool ServiceStation::hasMechanic(string login) {
 }
 
 /*Геттеры*/
-vector<shared_ptr<Vehicle>> ServiceStation::getVehicles() {return vehicles;}
-vector<shared_ptr<Client>> ServiceStation::getClients() {return clients;}
-vector<shared_ptr<Service>> ServiceStation::getServices() { return services; }
-vector<shared_ptr<Request>> ServiceStation::getRequests() { return requests; }
-vector<shared_ptr<Mechanic>> ServiceStation::getMechanics() { return mechanics; }
+vector<shared_ptr<Vehicle>>& ServiceStation::getVehicles() {return vehicles;}
+vector<shared_ptr<Client>>& ServiceStation::getClients() {return clients;}
+vector<shared_ptr<Service>>& ServiceStation::getServices() { return services; }
+vector<shared_ptr<Request>>& ServiceStation::getRequests() { return requests; }
+vector<shared_ptr<Mechanic>>& ServiceStation::getMechanics() { return mechanics; }

@@ -26,6 +26,7 @@ public:
 	Mechanic(string login, string name, string surname, string email);
 
 	void addRequest(shared_ptr<Request> request);
+	void delRequest(int index);
 
 	/*Геттеры*/
 	string getLogin();
@@ -46,6 +47,8 @@ public:
 	static vector<shared_ptr<Mechanic>> readFile(vector<shared_ptr<Request>> req);
 	static void writeFile(vector<shared_ptr<Mechanic>> mechanics);
 	static void writeOneFile(shared_ptr<Mechanic> mech);
+
+	static void showMechanic(vector<shared_ptr<Mechanic>> mechanics);
 };
 
 #endif

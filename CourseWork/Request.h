@@ -31,6 +31,9 @@ public:
 	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status);
 	Request();
 
+	void delService(int index);
+	void addService(shared_ptr<Service> s);
+
 	/*Геттеры*/
 	int getId();
 	int getStatus();

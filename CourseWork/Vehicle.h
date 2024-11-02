@@ -28,6 +28,12 @@ public:
 	string getBrand();
 	string getVIN();
 
+	/*Сеттеры*/
+	void setBrand(string brand);
+	void setModel(string model);
+	void setNumber(string number);
+	void setVIN(string vin);
+
 	static void showVehicle(vector<shared_ptr<Vehicle>> vehicles);
 
 	/*Чтение из файла + Запись в файл*/

@@ -1,6 +1,6 @@
 #include "Bill.h"
 
-Bill::Bill(int sum, bool status) {
+Bill::Bill(double sum, bool status) {
 	this->sum = sum;
 	this->status = status;
 }
@@ -13,5 +13,5 @@ Bill::Bill() {
 void Bill::approveBill() { this->status = true; }
 
 /*Геттеры*/
-int Bill::getSum() { return sum; }
+double Bill::getSum() { return sum; }
 bool Bill::getStatus() { return status; }

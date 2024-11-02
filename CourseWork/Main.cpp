@@ -24,7 +24,7 @@ int main() {
 	srand(time(NULL));
 
 	ServiceStation::getInstance().init();
-#if 1
+#if 0
 
 	ServiceStation::getInstance().showClient();
 	cout << endl;

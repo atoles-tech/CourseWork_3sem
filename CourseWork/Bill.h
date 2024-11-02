@@ -8,16 +8,16 @@ using namespace std;
 
 class Bill {
 private:
-	int sum;
+	double sum;
 	bool status;
 public:
-	Bill(int sum, bool status);
+	Bill(double sum, bool status);
 	Bill();
 
 	void approveBill();
 
 	/*Геттеры*/
-	int getSum();
+	double getSum();
 	bool getStatus();
 };
 

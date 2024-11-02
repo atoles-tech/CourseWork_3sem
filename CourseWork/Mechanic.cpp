@@ -13,6 +13,9 @@ Mechanic::Mechanic(string login, string name, string surname, string email) {
 void Mechanic::addRequest(shared_ptr<Request> request) {
 	requests.push_back(request);
 }
+void Mechanic::delRequest(int index) {
+	requests.erase(requests.begin() + index);
+}
 
 /*Геттеры*/
 string Mechanic::getLogin() { return login; }
@@ -109,4 +112,26 @@ void Mechanic::writeOneFile(shared_ptr<Mechanic> mech) {
 		f << r->getId() << ";";
 	}
 	f << endl;
+}
+
+void Mechanic::showMechanic(vector<shared_ptr<Mechanic>> mechanics) {
+	if (mechanics.size() == 0) {
+		cout << "Механиков нет" << endl;
+		return;
+	}
+
+	cout << setw(7) << "Номер" << "|"
+		<< setw(15) << "Логин" << "|"
+		<< setw(20) << "Имя" << "|"
+		<< setw(20) << "Фамилия" << "|" << endl;
+
+	cout << string(66, '=') << endl;
+
+	int i = 1;
+	for (shared_ptr<Mechanic> m : mechanics) {
+		cout << setw(7) << i++ << "|"
+			<< setw(15) << m->getLogin() << "|"
+			<< setw(20) << m->getName() << "|"
+			<< setw(20) << m->getSurname() << "|" << endl;
+	}
 }

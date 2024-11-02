@@ -27,6 +27,8 @@ public:
 
 	void addVehicle(shared_ptr<Vehicle> vehicle);
 	void addRequest(shared_ptr<Request> request);
+	void delVehicle(int index);
+	void delRequest(int index);
 
 	/*Геттеры*/
 	string getName();
@@ -46,6 +48,8 @@ public:
 	static vector<shared_ptr<Client>> readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh);
 	static void writeFile(vector<shared_ptr<Client>> clients);
 	static void writeOneFile(shared_ptr<Client> c);
+	
+	static void showClient(vector<shared_ptr<Client>> clients);
 };
 
 #endif // !CLIENT_H

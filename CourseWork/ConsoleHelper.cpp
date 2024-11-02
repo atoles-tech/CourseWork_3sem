@@ -126,6 +126,9 @@ bool ConsoleHelper::checkName(string name) {
 
 int ConsoleHelper::getIntToSize(int size) {
 	int input;
+	if (size == 0) {
+		return -1;
+	}
 	do {
 		input = readInt("");
 		if (input >= 1 && input <= size) {
