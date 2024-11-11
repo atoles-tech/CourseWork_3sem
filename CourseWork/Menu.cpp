@@ -80,6 +80,7 @@ void Menu::adminMenuEditAccount(string name) {
 
 	while (true) {
 		system("cls");
+		cout << "===Управление аккаунтами===" << endl;
 		cout << "1.Добавить аккаунт" << endl;
 		cout << "2.Изменить аккаунт" << endl;
 		cout << "3.Удалить аккаунт" << endl;

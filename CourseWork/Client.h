@@ -6,20 +6,16 @@
 #include <memory>
 #include "Vehicle.h"
 #include "Request.h"
+#include "Human.h"
 
 using namespace std;
 
 class Request;
 
-class Client {
+class Client : public Human {
 private:
 	const static string filename;
 
-	string login;
-
-	string name;
-	string surname;
-	string email;
 	vector<shared_ptr<Vehicle>> vehicles;
 	vector<shared_ptr<Request>> requests;
 public:
@@ -31,18 +27,8 @@ public:
 	void delRequest(int index);
 
 	/*Геттеры*/
-	string getName();
-	string getSurname();
-	string getEmail();
-	string getLogin();
 	vector<shared_ptr<Vehicle>> getVehicles();
 	vector<shared_ptr<Request>> getRequests();
-
-	/*Сеттеры*/
-	void setEmail(string email);
-	void setLogin(string login);
-	void setName(string name);
-	void setSurname(string surname);
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Client>> readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh);

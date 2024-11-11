@@ -2,11 +2,7 @@
 
 const string Mechanic::filename = "mechanics.dat";
 
-Mechanic::Mechanic(string login, string name, string surname, string email) {
-	this->login = login;
-	this->name = name;
-	this->surname = surname;
-	this->email = email;
+Mechanic::Mechanic(string login, string name, string surname, string email) : Human(login,name,surname,email) {
 	isBusy = false;
 }
 
@@ -18,19 +14,11 @@ void Mechanic::delRequest(int index) {
 }
 
 /*Геттеры*/
-string Mechanic::getLogin() { return login; }
-string Mechanic::getName() { return name; }
-string Mechanic::getSurname() { return surname; }
-string Mechanic::getEmail() { return email; }
 bool Mechanic::getStatus() { return isBusy; }
 vector<shared_ptr<Request>> Mechanic::getRequests() { return requests; }
 
 /*Сеттеры*/
 void Mechanic::setStatus(bool status) { this->isBusy = status; }
-void Mechanic::setLogin(string login) { this->login = login; }
-void Mechanic::setName(string name) { this->name = name; }
-void Mechanic::setSurname(string surname) { this->surname = surname; }
-void Mechanic::setEmail(string email) { this->email = email; }
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Mechanic>> Mechanic::readFile(vector<shared_ptr<Request>> req) {

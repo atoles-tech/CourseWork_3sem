@@ -24,6 +24,9 @@ int main() {
 	srand(time(NULL));
 
 	ServiceStation::getInstance().init();
+
+	Menu::initMenu();
+
 #if 0
 
 	ServiceStation::getInstance().showClient();
@@ -117,7 +120,6 @@ int main() {
 	cout << users[0].getLogin();
 #endif
 
-	Menu::initMenu();
 
 	return 0;
 }

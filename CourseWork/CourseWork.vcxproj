@@ -134,6 +134,7 @@
     <ClCompile Include="Mechanic.cpp" />
     <ClCompile Include="Menu.cpp" />
     <ClCompile Include="Client.cpp" />
+    <ClCompile Include="Human.cpp" />
     <ClCompile Include="Request.cpp" />
     <ClCompile Include="Service.cpp" />
     <ClCompile Include="ServiceStation.cpp" />
@@ -147,6 +148,7 @@
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Client.h" />
+    <ClInclude Include="Human.h" />
     <ClInclude Include="Request.h" />
     <ClInclude Include="Service.h" />
     <ClInclude Include="ServiceStation.h" />

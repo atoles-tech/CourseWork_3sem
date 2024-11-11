@@ -6,20 +6,16 @@
 #include <vector>
 #include <memory>
 #include "Request.h"
+#include "Human.h"
 
 using namespace std;
 
 class Request;
 
-class Mechanic {
+class Mechanic : public Human{
 private:
 	const static string filename;
 
-	string login;
-
-	string name;
-	string surname;
-	string email;
 	bool isBusy; // true - занят --- false - не занят
 	vector<shared_ptr<Request>> requests;
 public:
@@ -29,19 +25,11 @@ public:
 	void delRequest(int index);
 
 	/*Геттеры*/
-	string getLogin();
-	string getName();
-	string getSurname();
-	string getEmail();
 	bool getStatus();
 	vector<shared_ptr<Request>> getRequests();
 
 	/*Сеттеры*/
 	void setStatus(bool status);
-	void setLogin(string login);
-	void setName(string name);
-	void setSurname(string surname);
-	void setEmail(string email);
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Mechanic>> readFile(vector<shared_ptr<Request>> req);

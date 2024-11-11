@@ -28,7 +28,6 @@ public:
 	static void writeAllUsers(vector<User> users);
 	static void writeUser(User u);
 	static vector<User> showUsers();
-	static User changeUser(vector<User> users, User user);
 public:
 	string getLogin();
 	string getSalt();

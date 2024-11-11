@@ -2,12 +2,7 @@
 
 const string Client::filename = "clients.dat";
 
-Client::Client(string login, string name, string surname, string email) {
-	this->login = login;
-	this->name = name;
-	this->surname = surname;
-	this->email = email;
-}
+Client::Client(string login, string name, string surname, string email) : Human(login, name, surname, email) {}
 
 void Client::addVehicle(shared_ptr<Vehicle> vehicle) {
 	vehicles.push_back(vehicle);
@@ -21,18 +16,9 @@ void Client::delVehicle(int index) { vehicles.erase(vehicles.begin() + index); }
 void Client::delRequest(int index) { requests.erase(requests.begin() + index); }
 
 /*Геттеры*/
-string Client::getName() { return name; }
-string Client::getSurname() { return surname; }
-string Client::getEmail() { return email; }
-string Client::getLogin() { return login; }
 vector<shared_ptr<Vehicle>> Client::getVehicles() { return vehicles; }
 vector<shared_ptr<Request>> Client::getRequests() { return requests; }
 
-/*Сеттеры*/
-void Client::setEmail(string email) { this->email = email; }
-void Client::setLogin(string login) { this->login = login; }
-void Client::setName(string name) { this->name = name; }
-void Client::setSurname(string surname) { this->surname = surname; }
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Client>> Client::readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh) { /////
