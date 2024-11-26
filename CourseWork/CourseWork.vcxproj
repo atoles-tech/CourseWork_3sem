@@ -130,6 +130,7 @@
     <ClCompile Include="Bill.cpp" />
     <ClCompile Include="ConsoleHelper.cpp" />
     <ClCompile Include="HashFunc.cpp" />
+    <ClCompile Include="ListUser.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Mechanic.cpp" />
     <ClCompile Include="Menu.cpp" />
@@ -145,6 +146,7 @@
     <ClInclude Include="Bill.h" />
     <ClInclude Include="ConsoleHelper.h" />
     <ClInclude Include="HashFunc.h" />
+    <ClInclude Include="ListUser.h" />
     <ClInclude Include="Mechanic.h" />
     <ClInclude Include="Menu.h" />
     <ClInclude Include="Client.h" />
