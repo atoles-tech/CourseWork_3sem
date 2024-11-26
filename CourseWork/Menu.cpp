@@ -7,12 +7,14 @@ using namespace std;
 void Menu::initMenu() {
 	while (true) {
 		system("cls");
+		User::checkFile();
+
 		cout << "===Главное меню===" << endl;
 		cout << "1.Авторизация" << endl;
 		cout << "2.Регистрация" << endl;
-		cout << "3.Выход" << endl;
+		cout << "0.Выход" << endl;
 		cout << "------------------" << endl;
-		int input = ConsoleHelper::getOneInt("123");
+		int input = ConsoleHelper::getOneInt("120");
 		switch (input) {
 		case 1:
 			Menu::authorize();
@@ -20,7 +22,7 @@ void Menu::initMenu() {
 		case 2:
 			Menu::registr(0);
 			break;
-		case 3:
+		case 0:
 			return;
 		}
 	}
@@ -32,8 +34,52 @@ void Menu::mechanicMenu(string name) {
 		cout << "Введите свои данные чтобы продолжить!" << endl;
 		ServiceStation::getInstance().addMechanic(inputMechanic(name));
 	}
-	system("cls");
-	cout << "Меню механика!" << endl;
+	shared_ptr<Mechanic> m;
+	for (shared_ptr<Mechanic> mech : ServiceStation::getInstance().getMechanics()) {
+		if (mech->getLogin() == name) {
+			m = mech;
+		}
+	}
+	vector<shared_ptr<Request>> req;
+	for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
+		if (r->getStatus() == 0) {
+			req.push_back(r);
+		}
+	}
+	while (true) {
+		system("cls");
+		cout << "Меню механика!" << endl;
+		cout << "1.Просмотр своих заказов" << endl;
+		cout << "2.Просмотр свободных заказов" << endl;
+		cout << "3.Закончить заказ" << endl;
+		cout << "0.Выход из аккаунта" << endl;
+		int input = ConsoleHelper::getOneInt("0123");
+		switch (input) {
+		case 1:
+			Request::showRequest(m->getRequests());
+			break;
+		case 2:
+			Request::showRequest(req);
+			break;
+		case 3:
+			if (m->getStatus()) {
+				m->setStatus(false);
+				for (shared_ptr<Request> r : m->getRequests()) {
+					if (r->getStatus() == 1) {
+						r->setStatus(2);
+						break;
+					}
+				}
+			}
+			else {
+				cout << "У вас нет активного заказа" << endl;
+				system("pause");
+			}
+			break;
+		case 0:
+			return;
+		}
+	}
 	system("pause");
 }
 
@@ -44,9 +90,109 @@ void Menu::userMenu(string name) {
 		cout << "Введите свои данные чтобы продолжить!" << endl;
 		ServiceStation::getInstance().addClient(inputClient(name));
 	}
-	system("cls");
-	cout << "Меню пользователя!" << endl;
-	system("pause");
+	shared_ptr<Client> client;
+
+	for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+		if (c->getLogin() == name) {
+			client = c;
+			break;
+		}
+	}
+	shared_ptr<Vehicle> v;
+	shared_ptr<Request> r;
+	while (true) {
+		system("cls");
+		cout << "Меню пользователя!" << endl;
+		cout << "1.Просмотр своих заказов" << endl;
+		cout << "2.Добавить автомобиль" << endl;
+		cout << "3.Сделать заказ" << endl;
+		cout << "4.Просмотреть всех механиков" << endl;
+		cout << "5.Подробный просмотр заказа" << endl;
+		cout << "6.Отсортировать заказы" << endl;
+		cout << "0.Выход из аккаунта" << endl;
+		int input = ConsoleHelper::getOneInt("0123456");
+		switch (input) {
+		case 1:
+			Request::showRequest(client->getRequests());
+			break;
+		case 2:
+			v = Menu::inputVehicle();
+			if (v->getNumber() == "()") {
+				break;
+			}
+			client->addVehicle(v);
+			ServiceStation::getInstance().addVehicle(v);
+			cout << "Автомобиль добавлен" << endl;
+			break;
+		case 3:
+			if (ServiceStation::getInstance().getServices().size() == 0) {
+				cout << "Невозможно добавить заказ по причине: Отсутствие услуг" << endl;
+				break;
+			}
+			else if (client->getVehicles().size() == 0) {
+				cout << "Невозможно добавить заказ по причине: Отсутствие автомобилей" << endl;
+				break;
+			}
+			r = inputRequest();
+			if (r->getStatus() != -1) {
+				ServiceStation::getInstance().addRequest(r);
+				client->addRequest(r);
+				cout << "Заказ добавлен" << endl;
+				system("pause");
+			}
+			break;
+		case 4:
+			ServiceStation::getInstance().showMechanic();
+			break;
+		case 5:
+			ServiceStation::getInstance().showRequest();
+			cout << "Введите номер заказа: ";
+			r = ServiceStation::getInstance().getRequests()[ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size()) - 1];
+			cout << "ID: " << r->getId() << endl;
+			cout << "Клиент: " << r->getClient() << endl;
+			cout << "Механик: " << (r->getMechanic() == "N/A" ? "Механик не назначен" : r->getMechanic()) << endl << endl;
+
+			cout << "Автомобиль:" << endl;
+			cout << "Номер: " << r->getVehicle()->getNumber() << endl;
+			cout << "Марка: " << r->getVehicle()->getBrand() << endl;
+			cout << "Модель: " << r->getVehicle()->getModel() << endl;
+			cout << "VIN: " << r->getVehicle()->getVIN() << endl << endl;
+
+			cout << "Услуги:" << endl;
+			Service::showService(r->getServices());
+			system("pause");
+			break;
+		case 6:
+			if (client->getRequests().size() < 2) {
+				cout << "Данных для сортировки недостаточно" << endl;
+			}
+			system("cls");
+			cout << "===Методы сортировки заказов===" << endl;
+			cout << "1.Сортировать по ID(1-9)" << endl;
+			cout << "2.Сортировать по ID(9-1)" << endl;
+			cout << "3.Сортировать по клиенту(A-Z)" << endl;
+			cout << "4.Сортировать по клиенту(Z-А)" << endl;
+			cout << "5.Сортировать по механику(A-Z)" << endl;
+			cout << "6.Сортировать по механику(Z-А)" << endl;
+			cout << "Выберите метод сортировки:";
+
+			switch (ConsoleHelper::getOneInt("123456")) {
+			case 1:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getId() < b->getId(); }); break;
+			case 2:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getId() > b->getId(); }); break;
+			case 3:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getClient() < b->getClient(); }); break;
+			case 4:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getClient() > b->getClient(); }); break;
+			case 5:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getMechanic() < b->getMechanic(); }); break;
+			case 6:sort(client->getRequests().begin(), client->getRequests().end(), [](const shared_ptr<Request>& a, const shared_ptr<Request>& b) {return a->getMechanic() > b->getMechanic(); }); break;
+			}
+
+			Client::writeFile(ServiceStation::getInstance().getClients());
+			cout << "Данные отсортированы и сохранены!" << endl;
+			break;
+		case 0:
+			return;
+		}
+		system("pause");
+	}
 }
 
 //---------------------------------------------------------------------------//
@@ -68,7 +214,6 @@ void Menu::adminMenu(string name) {
 			break;
 		case 0:
 			return;
-			break;
 		}
 		system("pause");
 	}
@@ -489,26 +634,7 @@ void Menu::adminMenuEditDataShow(string name) {
 		cout << "Введите номер клиента: ";
 		int n = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getClients().size());
 		shared_ptr<Client> c = ServiceStation::getInstance().getClients()[n - 1];
-		cout << "Логин: " << c->getLogin() << endl;
-		cout << "Имя: " << c->getName() << endl;
-		cout << "Фамилия: " << c->getSurname() << endl;
-		cout << "Email: " << c->getEmail() << endl << endl;
-
-		if (c->getVehicles().size() == 0) {
-			cout << "Автомобилей нет!" << endl;
-		}
-		else {
-			cout << "Автомобили:" << endl;
-			Vehicle::showVehicle(c->getVehicles());
-		}
-		cout << endl;
-		if (c->getRequests().size() == 0) {
-			cout << "Заказов нет!" << endl;
-		}
-		else {
-			cout << "Заказы:" << endl;
-			Request::showRequest(c->getRequests());
-		}
+		c->showInfo();
 		system("pause");
 		break;
 	}
@@ -537,14 +663,7 @@ void Menu::adminMenuEditDataShow(string name) {
 		cout << "Введите номер заказа: ";
 		int n = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getMechanics().size());
 		shared_ptr<Mechanic> m = ServiceStation::getInstance().getMechanics()[n - 1];
-		cout << "Логин: " << m->getLogin() << endl;
-		cout << "Имя: " << m->getName() << endl;
-		cout << "Фамилия: " << m->getSurname() << endl;
-		cout << "Email: " << m->getEmail() << endl;
-		cout << "Статус: " << (m->getStatus() == true ? "Занят" : "Свободен") << endl << endl;
-
-		cout << "Заказы: " << endl;
-		Request::showRequest(m->getRequests());
+		m->showInfo();
 		system("pause");
 	}
 		break;

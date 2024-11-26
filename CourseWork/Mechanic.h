@@ -26,10 +26,12 @@ public:
 
 	/*Геттеры*/
 	bool getStatus();
-	vector<shared_ptr<Request>> getRequests();
+	vector<shared_ptr<Request>>& getRequests();
 
 	/*Сеттеры*/
 	void setStatus(bool status);
+
+	void showInfo() override;
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Mechanic>> readFile(vector<shared_ptr<Request>> req);

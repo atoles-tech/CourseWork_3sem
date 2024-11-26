@@ -99,6 +99,14 @@ vector<User> User::showUsers() {
 }
 
 
+void User::checkFile() {
+	ifstream f(filename, ios::binary | ios::app);
+	if (f.eof()) {
+		string salt = Hash::generateSalt();
+		User user = User("admin", Hash::getHash("admin", salt), 2, salt, 1);
+		User::writeUser(user);
+	}
+}
 
 
 /*Геттеры*/

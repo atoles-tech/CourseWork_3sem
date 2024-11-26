@@ -16,9 +16,31 @@ void Client::delVehicle(int index) { vehicles.erase(vehicles.begin() + index); }
 void Client::delRequest(int index) { requests.erase(requests.begin() + index); }
 
 /*Геттеры*/
-vector<shared_ptr<Vehicle>> Client::getVehicles() { return vehicles; }
-vector<shared_ptr<Request>> Client::getRequests() { return requests; }
+vector<shared_ptr<Vehicle>>& Client::getVehicles() { return vehicles; }
+vector<shared_ptr<Request>>& Client::getRequests() { return requests; }
 
+void Client::showInfo() {
+	cout << "Логин: " << this->getLogin() << endl;
+	cout << "Имя: " << this->getName() << endl;
+	cout << "Фамилия: " << this->getSurname() << endl;
+	cout << "Email: " << this->getEmail() << endl << endl;
+
+	if (this->getVehicles().size() == 0) {
+		cout << "Автомобилей нет!" << endl;
+	}
+	else {
+		cout << "Автомобили:" << endl;
+		Vehicle::showVehicle(this->getVehicles());
+	}
+	cout << endl;
+	if (this->getRequests().size() == 0) {
+		cout << "Заказов нет!" << endl;
+	}
+	else {
+		cout << "Заказы:" << endl;
+		Request::showRequest(this->getRequests());
+	}
+}
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Client>> Client::readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh) { /////

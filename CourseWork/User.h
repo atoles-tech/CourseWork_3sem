@@ -29,6 +29,8 @@ public:
 	static void writeUser(User u);
 	static vector<User> showUsers();
 public:
+	static void checkFile();
+
 	string getLogin();
 	string getSalt();
 	long long int getHash();

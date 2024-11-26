@@ -3,7 +3,7 @@
 #include <memory>
 #include <vector>
 
-#include "Menu.h"				//DANGER//
+#include "Menu.h"				//DELETE//
 #include "HashFunc.h"
 #include "User.h"
 #include "ServiceStation.h"
@@ -11,7 +11,7 @@
 #include "Mechanic.h"
 #include "Vehicle.h"
 #include "Service.h"
-#include "ConsoleHelper.h"		//DANGER//
+#include "ConsoleHelper.h"		//DELETE//
 
 /*–азработка автоматизированной системы функционировани€ станции технического обслуживани€*/
 
@@ -119,7 +119,5 @@ int main() {
 	users = User::readUsers();
 	cout << users[0].getLogin();
 #endif
-
-
 	return 0;
 }

@@ -15,10 +15,21 @@ void Mechanic::delRequest(int index) {
 
 /*Геттеры*/
 bool Mechanic::getStatus() { return isBusy; }
-vector<shared_ptr<Request>> Mechanic::getRequests() { return requests; }
+vector<shared_ptr<Request>>& Mechanic::getRequests() { return requests; }
 
 /*Сеттеры*/
 void Mechanic::setStatus(bool status) { this->isBusy = status; }
+
+void Mechanic::showInfo(){
+	cout << "Логин: " << this->getLogin() << endl;
+	cout << "Имя: " << this->getName() << endl;
+	cout << "Фамилия: " << this->getSurname() << endl;
+	cout << "Email: " << this->getEmail() << endl;
+	cout << "Статус: " << (this->getStatus() == true ? "Занят" : "Свободен") << endl << endl;
+
+	cout << "Заказы: " << endl;
+	Request::showRequest(this->getRequests());
+}
 
 /*Чтение из файла + Запись в файл*/
 vector<shared_ptr<Mechanic>> Mechanic::readFile(vector<shared_ptr<Request>> req) {

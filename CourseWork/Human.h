@@ -27,6 +27,8 @@ public:
 	void setName(string name);
 	void setSurname(string surname);
 
+	virtual void showInfo() = 0;
+
 };
 
 #endif // !PEOPLE_H

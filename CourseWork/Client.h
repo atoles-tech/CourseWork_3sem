@@ -27,8 +27,10 @@ public:
 	void delRequest(int index);
 
 	/*Геттеры*/
-	vector<shared_ptr<Vehicle>> getVehicles();
-	vector<shared_ptr<Request>> getRequests();
+	vector<shared_ptr<Vehicle>>& getVehicles();
+	vector<shared_ptr<Request>>& getRequests();
+
+	void showInfo() override;
 
 	/*Чтение из файла + Запись в файл*/
 	static vector<shared_ptr<Client>> readFile(vector<shared_ptr<Request>> req, vector<shared_ptr<Vehicle>> veh);
