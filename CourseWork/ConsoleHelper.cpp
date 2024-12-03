@@ -3,7 +3,12 @@
 string ConsoleHelper::readString(string s) {
 	cout << s;
 	string str;
-	getline(cin, str);
+	while (true) {
+		getline(cin, str);
+		if (str.size() >= 1) {
+			break;
+		}
+	}
 	return str;
 }
 

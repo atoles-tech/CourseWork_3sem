@@ -9,18 +9,18 @@ void Menu::initMenu() {
 		system("cls");
 		User::checkFile();
 
-		cout << "===Главное меню===" << endl;
+		cout << "=========Главное меню=========" << endl;
 		cout << "1.Авторизация" << endl;
 		cout << "2.Регистрация" << endl;
 		cout << "0.Выход" << endl;
-		cout << "------------------" << endl;
+		cout << "------------------------------" << endl;
 		int input = ConsoleHelper::getOneInt("120");
 		switch (input) {
 		case 1:
 			Menu::authorize();
 			break;
 		case 2:
-			Menu::registr(0);
+			Menu::registr(0,false);
 			break;
 		case 0:
 			return;
@@ -48,12 +48,14 @@ void Menu::mechanicMenu(string name) {
 	}
 	while (true) {
 		system("cls");
-		cout << "Меню механика!" << endl;
+		cout << "======Меню механика======" << endl;
 		cout << "1.Просмотр своих заказов" << endl;
 		cout << "2.Просмотр свободных заказов" << endl;
 		cout << "3.Закончить заказ" << endl;
 		cout << "0.Выход из аккаунта" << endl;
+		cout << "-------------------------" << endl;
 		int input = ConsoleHelper::getOneInt("0123");
+		int a;
 		switch (input) {
 		case 1:
 			Request::showRequest(m->getRequests());
@@ -79,8 +81,8 @@ void Menu::mechanicMenu(string name) {
 		case 0:
 			return;
 		}
+		system("pause");
 	}
-	system("pause");
 }
 
 //---------------------------------------------------------------------------//
@@ -91,7 +93,7 @@ void Menu::userMenu(string name) {
 		ServiceStation::getInstance().addClient(inputClient(name));
 	}
 	shared_ptr<Client> client;
-
+	int a;
 	for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
 		if (c->getLogin() == name) {
 			client = c;
@@ -104,18 +106,23 @@ void Menu::userMenu(string name) {
 		system("cls");
 		cout << "Меню пользователя!" << endl;
 		cout << "1.Просмотр своих заказов" << endl;
-		cout << "2.Добавить автомобиль" << endl;
-		cout << "3.Сделать заказ" << endl;
-		cout << "4.Просмотреть всех механиков" << endl;
-		cout << "5.Подробный просмотр заказа" << endl;
-		cout << "6.Отсортировать заказы" << endl;
+		cout << "2.Просмотр своих авто" << endl;
+		cout << "3.Добавить автомобиль" << endl;
+		cout << "4.Сделать заказ" << endl;
+		cout << "5.Просмотреть всех механиков" << endl;
+		cout << "6.Подробный просмотр заказа" << endl;
+		cout << "7.Отсортировать заказы" << endl;
+		cout << "8.Оплатить заказ" << endl;
 		cout << "0.Выход из аккаунта" << endl;
-		int input = ConsoleHelper::getOneInt("0123456");
+		int input = ConsoleHelper::getOneInt("012345678");
 		switch (input) {
 		case 1:
 			Request::showRequest(client->getRequests());
 			break;
 		case 2:
+			Vehicle::showVehicle(client->getVehicles());
+			break;
+		case 3:
 			v = Menu::inputVehicle();
 			if (v->getNumber() == "()") {
 				break;
@@ -124,7 +131,7 @@ void Menu::userMenu(string name) {
 			ServiceStation::getInstance().addVehicle(v);
 			cout << "Автомобиль добавлен" << endl;
 			break;
-		case 3:
+		case 4:
 			if (ServiceStation::getInstance().getServices().size() == 0) {
 				cout << "Невозможно добавить заказ по причине: Отсутствие услуг" << endl;
 				break;
@@ -133,19 +140,18 @@ void Menu::userMenu(string name) {
 				cout << "Невозможно добавить заказ по причине: Отсутствие автомобилей" << endl;
 				break;
 			}
-			r = inputRequest();
+			r = inputRequestForUser(name);
 			if (r->getStatus() != -1) {
 				ServiceStation::getInstance().addRequest(r);
 				client->addRequest(r);
 				cout << "Заказ добавлен" << endl;
-				system("pause");
 			}
 			break;
-		case 4:
+		case 5:
 			ServiceStation::getInstance().showMechanic();
 			break;
-		case 5:
-			ServiceStation::getInstance().showRequest();
+		case 6:
+			Request::showRequest(client->getRequests());
 			cout << "Введите номер заказа: ";
 			r = ServiceStation::getInstance().getRequests()[ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size()) - 1];
 			cout << "ID: " << r->getId() << endl;
@@ -160,9 +166,8 @@ void Menu::userMenu(string name) {
 
 			cout << "Услуги:" << endl;
 			Service::showService(r->getServices());
-			system("pause");
 			break;
-		case 6:
+		case 7:
 			if (client->getRequests().size() < 2) {
 				cout << "Данных для сортировки недостаточно" << endl;
 			}
@@ -188,9 +193,35 @@ void Menu::userMenu(string name) {
 			Client::writeFile(ServiceStation::getInstance().getClients());
 			cout << "Данные отсортированы и сохранены!" << endl;
 			break;
+		case 8: {
+			vector<shared_ptr<Request>> req;
+			for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+				if (c->getLogin() == name) {
+					client = c;
+					break;
+				}
+			}
+			for (shared_ptr<Request> r : client->getRequests()) {
+				if (!r->getBill().getStatus()) {
+					req.push_back(r);
+				}
+			}
+			if (req.size() == 0) {
+				cout << "У вас нет активных заказов" << endl;
+				break;
+			}
+			Request::showRequest(req);
+			cout << "Ввыберите порядковый номер заказа, который желаете оплатить: ";
+			a = ConsoleHelper::getIntToSize(req.size());
+			req[a - 1]->getBill().approveBill();
+			Request::writeFile(ServiceStation::getInstance().getRequests());
+			cout << "Заказ ID: " << req[a - 1]->getId() << " оплачен" << endl;
+			break;
+		}
 		case 0:
 			return;
 		}
+		Client::writeFile(ServiceStation::getInstance().getClients());
 		system("pause");
 	}
 }
@@ -236,9 +267,8 @@ void Menu::adminMenuEditAccount(string name) {
 		switch (input) {
 		case 1:
 			cout << "Введите роль для аккаунта(0 - клиент, 1 - механик, 2 - администратор): ";
-			registr(ConsoleHelper::getOneInt("012"));
+			registr(ConsoleHelper::getOneInt("012"),true);
 			cout << "Аккаунт зарегистрирован" << endl;
-			User::writeAllUsers(users);
 			break;
 		case 2:
 			users = User::showUsers();
@@ -256,9 +286,15 @@ void Menu::adminMenuEditAccount(string name) {
 				cout << "Вы не можете удалить себя" << endl;
 				break;
 			}
-			for (shared_ptr<Client> c :ServiceStation::getInstance().getClients()) {
-				if (c->getLogin() == users[index].getLogin()) {
-					c->setLogin(c->getLogin() + "(del)");
+			for (int i = 0; i < ServiceStation::getInstance().getClients().size();i++) {
+				if (ServiceStation::getInstance().getClients()[i]->getLogin() == users[index].getLogin()) {
+					ServiceStation::getInstance().delClient(i);
+					break;
+				}
+			}
+			for (int i = 0; i < ServiceStation::getInstance().getMechanics().size(); i++) {
+				if (ServiceStation::getInstance().getMechanics()[i]->getLogin() == users[index].getLogin()) {
+					ServiceStation::getInstance().delMechanic(i);
 					break;
 				}
 			}
@@ -268,6 +304,8 @@ void Menu::adminMenuEditAccount(string name) {
 				}
 			}
 			users.erase(users.begin() + index);
+			Request::writeFile(ServiceStation::getInstance().getRequests());
+			Client::writeFile(ServiceStation::getInstance().getClients());
 			User::writeAllUsers(users);
 			break;
 		case 4:
@@ -1147,6 +1185,7 @@ void Menu::adminMenuEditDataSearchClient() {
 void Menu::authorize() {
 	system("cls");
 	vector<User> users = User::readUsers();
+	cout << "======Авторизация======" << endl;
 	string login = ConsoleHelper::readString("Введите имя: ");
 
 	User user = User::getUser(users,login);
@@ -1187,13 +1226,22 @@ void Menu::authorize() {
 	}
 }
 
-void Menu::registr(int role) {
+void Menu::registr(int role,bool access) {
 	system("cls");
 
 	vector<User> users = User::readUsers();
-
+	cout << "======Регистрация======" << endl;
 	string login = ConsoleHelper::readString("Введите логин: ");
-
+	if (login.size() < 4) {
+		cout << "Минимальное длина логина должна быть 4" << endl;
+		system("pause");
+		return;
+	}
+	if (login.size() > 15) {
+		cout << "Максимальная длина логина 15 символов" << endl;
+		system("pause");
+		return;
+	}
 	if (!ConsoleHelper::checkString(login)) {
 		cout << "Неккоректный формат логина!" << endl;
 		system("pause");
@@ -1210,11 +1258,19 @@ void Menu::registr(int role) {
 
 	string password = ConsoleHelper::getPassword("Введите пароль: ");
 	
+	cout << endl;
+
+	if (password.size() < 4) {
+		cout << "Минимальное длина пароля должна быть 4" << endl;
+		system("pause");
+		return;
+	}
+
 	string salt = Hash::generateSalt();
 
 	long long int hash = Hash::getHash(password, salt);
 
-	User user(login, hash, role, salt, false);
+	User user(login, hash, role, salt, access);
 
 	User::writeUser(user);
 }
@@ -1313,7 +1369,15 @@ shared_ptr<Vehicle> Menu::inputVehicle() {
 	}
 	string brand = ConsoleHelper::readString("Введите марку автомобиля: ");
 	string model = ConsoleHelper::readString("Введите модель автомобиля: ");
-	string vin = ConsoleHelper::readString("Введите VIN автомобиля: ");
+	string vin;
+	while (true) {
+		vin = ConsoleHelper::readString("Введите VIN автомобиля: ");
+		if (vin.size() != 17) {
+			cout << "Длина VIN должна быть 17 символов" << endl;
+			continue;
+		}
+		break;
+	}
 
 	v = make_shared<Vehicle>(car_number,model,brand,vin);
 
@@ -1365,7 +1429,7 @@ shared_ptr<Request> Menu::inputRequest() {
 		}
 	}
 
-	r = make_shared<Request>(id, ServiceStation::getInstance().getClients()[input - 1]->getLogin(), ServiceStation::getInstance().getVehicles()[input_v - 1], ser, 0);
+	r = make_shared<Request>(id, ServiceStation::getInstance().getClients()[input - 1]->getLogin(), ServiceStation::getInstance().getVehicles()[input_v - 1], ser, 0,false);
 
 	ServiceStation::getInstance().getClients()[input - 1]->addRequest(r);
 	
@@ -1394,6 +1458,60 @@ shared_ptr<Service> Menu::inputService() {
 	s = make_shared<Service>(id, name, price, time);
 
 	return s;
+}
+
+shared_ptr<Request> Menu::inputRequestForUser(string login) {
+	shared_ptr<Request> r = make_shared<Request>();
+	int id = ConsoleHelper::readInt("Введите id заказа: ");
+	for (shared_ptr<Request> req : ServiceStation::getInstance().getRequests()) {
+		if (req->getId() == id) {
+			cout << "Заказ с данным id уже существует" << endl;
+			system("pause");
+			return r;
+		}
+	}
+
+	shared_ptr<Client> client;
+
+	for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+		if (c->getLogin() == login) {
+			client = c;
+			break;
+		}
+	}
+
+	Vehicle::showVehicle(client->getVehicles());
+	cout << "Введите порядковый номер автомобиля: ";
+	int input_v = ConsoleHelper::getIntToSize(client->getVehicles().size());
+
+	vector<shared_ptr<Service>> ser;
+
+	ServiceStation::getInstance().showService();
+	cout << "Вводите номера услуг, когда посчитаете нужным закончить введите 0(нельзя отсавить список услуг пустым)" << endl;
+
+	while (true) {
+		int inp = ConsoleHelper::readInt("Введите номер сервиса: ");
+		if (inp > ServiceStation::getInstance().getServices().size()) {
+			cout << "Такого номера нет! Будьте внимательней" << endl;
+		}
+		else if (inp == 0) {
+			if (ser.size() == 0) {
+				cout << "Нельзя выйти, так как услуг нет";
+			}
+			else {
+				break;
+			}
+		}
+		else {
+			ser.push_back(ServiceStation::getInstance().getServices()[inp - 1]);
+		}
+	}
+
+	r = make_shared<Request>(id, client->getLogin(), client->getVehicles()[input_v - 1], ser, 0,false);
+
+	Request::writeOneFile(r);
+
+	return r;
 }
 
 //---------------------------------------------------------------------------//
@@ -1487,7 +1605,14 @@ void Menu::changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicl
 			vehicle->setNumber(tmp);
 			break;
 		case 4:
-			tmp = ConsoleHelper::readString("Введите новый VIN: ");
+			while (true) {
+				tmp = ConsoleHelper::readString("Введите новый VIN: ");
+				if (tmp.size() != 17) {
+					cout << "Длина VIN должна быть 17 символов" << endl;
+					continue;
+				}
+				break;
+			}
 			for (shared_ptr<Vehicle> v : vehicles) {
 				if(v->getVIN() == tmp){
 					t = true;

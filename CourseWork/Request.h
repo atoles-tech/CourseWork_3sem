@@ -27,8 +27,14 @@ private:
 	Bill bill;
 	vector<shared_ptr<Service>> services;
 	int status; // 0 - ожидает | 1 - ремонтируется | 2 - отремантирован
+
+	int day;
+	int month;
+	int year;
+
 public:
-	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status);
+	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status, bool statusBill);
+	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status, bool statusBill,int day,int month, int year);
 	Request();
 
 	void delService(int index);
@@ -40,8 +46,11 @@ public:
 	string getClient();
 	string getMechanic();
 	shared_ptr<Vehicle> getVehicle();
-	Bill getBill();
+	Bill& getBill();
 	vector<shared_ptr<Service>> getServices();
+	int getDay();
+	int getMonth();
+	int getYear();
 
 	/*Сеттеры*/
 	void setStatus(int status);

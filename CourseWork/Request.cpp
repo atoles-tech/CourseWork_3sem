@@ -2,7 +2,7 @@
 
 const string Request::filename = "requests.dat";
 
-Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status) {
+Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status,bool statusBill) {
 	this->id = id;
 	this->client = client;
 	this->mechanic = "N/A";
@@ -15,7 +15,35 @@ Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shar
 		sum += s->getPrice();
 	}
 
-	bill = Bill(sum, false);
+	bill = Bill(sum, statusBill);
+
+	time_t now;
+	time(&now);
+	struct tm local;
+	localtime_s(&local, &now);
+	this->day = local.tm_mday;
+	this->month = local.tm_mon + 1;
+	this->year = local.tm_year + 1900;
+}
+
+Request::Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status, bool statusBill, int day, int month, int year) {
+	this->id = id;
+	this->client = client;
+	this->mechanic = "N/A";
+	this->vehicle = vehicle;
+	this->services = services;
+	this->status = status;
+
+	double sum = 0;
+	for (auto& s : services) {
+		sum += s->getPrice();
+	}
+
+	bill = Bill(sum, statusBill);
+
+	this->day = day;
+	this->month = month;
+	this->year = year;
 }
 
 Request::Request() {
@@ -23,6 +51,9 @@ Request::Request() {
 	this->client = "N/A";
 	this->mechanic = "N/A";
 	this->status = -1;
+	this->day = 0;
+	this->month = 0;
+	this->year = 0;
 }
 
 void Request::delService(int index) { 
@@ -45,8 +76,11 @@ int Request::getStatus() { return status; }
 string Request::getClient() { return client; }
 string Request::getMechanic() { return mechanic; }
 shared_ptr<Vehicle> Request::getVehicle() { return vehicle; }
-Bill Request::getBill() { return bill; }
+Bill& Request::getBill() { return bill; }
 vector<shared_ptr<Service>> Request::getServices() { return services; }
+int Request::getDay() { return day; }
+int Request::getMonth() { return month; }
+int Request::getYear() { return year; }
 
 /*Сеттеры*/
 void Request::setStatus(int status) {this->status = status;}
@@ -65,14 +99,19 @@ vector<shared_ptr<Request>> Request::readFile(vector<shared_ptr<Vehicle>> vehicl
 		getline(f, line);
 
 		vector<string> strings = ConsoleHelper::split(line);
-
-		if (strings.size() != 5) { return requests; }
+		cout << strings.size() << endl;
+		
+		if (strings.size() != 9) { return requests; }
 
 		int id = stoi(strings[0]);
 		string client = strings[1];
 		string mechanic = strings[2];
 		shared_ptr<Vehicle> vehicle;
 		int status = stoi(strings[4]);
+		bool statusBill = stoi(strings[5]);
+		int day = stoi(strings[6]);
+		int month = stoi(strings[7]);
+		int year = stoi(strings[8]);
 
 		for (shared_ptr<Vehicle> v : vehicles) {
 			if (v->getNumber() == strings[3]) {
@@ -97,7 +136,7 @@ vector<shared_ptr<Request>> Request::readFile(vector<shared_ptr<Vehicle>> vehicl
 			}
 		}
 
-		shared_ptr<Request> request = make_shared<Request>(id, client, vehicle, serv, status);
+		shared_ptr<Request> request = make_shared<Request>(id, client, vehicle, serv, status,statusBill,day,month,year);
 		requests.push_back(request);
 	}
 
@@ -112,7 +151,11 @@ void Request::writeFile(vector<shared_ptr<Request>> requests) {
 		  << r->client << ";"
 		  << r->mechanic << ";"
 		  << r->vehicle->getNumber() << ";"
-		  << r->status << endl;
+		  << r->status << ";"
+		  << r->bill.getStatus() << ";"
+		  << r->day << ";"
+		  << r->month << ";"
+		  << r->year << endl;
 
 		for (shared_ptr<Service> s : r->services) {
 			f << s->getServiceId() << ";";
@@ -125,11 +168,15 @@ void Request::writeFile(vector<shared_ptr<Request>> requests) {
 void Request::writeOneFile(shared_ptr<Request> r) {
 	ofstream f(filename, ios::binary | std::ios::app);
 	
-	f << r->id << ";"
+	f   << r->id << ";"
 		<< r->client << ";"
 		<< r->mechanic << ";"
 		<< r->vehicle->getNumber() << ";"
-		<< r->status << endl;
+		<< r->status << ";"
+		<< r->bill.getStatus() << ";"
+		<< r->day << ";"
+		<< r->month << ";"
+		<< r->year << endl;
 
 	for (shared_ptr<Service> s : r->services) {
 		f << s->getServiceId() << ";";
@@ -151,9 +198,10 @@ void Request::showRequest(vector<shared_ptr<Request>> requests) {
 		<< setw(15) << "Номер авто" << "|"
 		<< setw(10) << "Стоимость" << "|" 
 		<< setw(20) << "Статус" << "|" 
-		<< setw(20) << "Статус оплаты" << "|" << endl;
+		<< setw(20) << "Статус оплаты" << "|" 
+		<< setw(12) << "Дата заказа" << endl;
 
-	cout << string(109, '=') << endl;
+	cout << string(122, '=') << endl;
 
 	int i = 1;
 	for (shared_ptr<Request> r : requests) {
@@ -163,6 +211,7 @@ void Request::showRequest(vector<shared_ptr<Request>> requests) {
 			<< setw(15) << r->getVehicle()->getNumber() << "|"
 			<< setw(10) << r->getBill().getSum() << "|"
 			<< setw(20) << (r->getStatus() == 0 ? "Ожидает" : (r->getStatus() == 1 ? "Ремонтируется" : "Отремонтирован")) << "|" 
-			<< setw(20) << (r->getBill().getStatus() == true?"Оплачен":"Ожидает оплаты") << "|" << endl;
+			<< setw(20) << (r->getBill().getStatus() == true?"Оплачен":"Ожидает оплаты") << "|"
+			<< " " << r->day << '.' << r->month << "." << r->year << endl;
 	}
 }

@@ -5,7 +5,7 @@ const string User::filename = "users.dat";
 User::User() {
 	this->login = "-";
 	this->hash = 0;
-	this->isAdmin = false;
+	this->isAdmin = 0;
 	this->salt = "AAAAAAAA";
 	this->isAccess = false;
 }
@@ -100,10 +100,11 @@ vector<User> User::showUsers() {
 
 
 void User::checkFile() {
-	ifstream f(filename, ios::binary | ios::app);
-	if (f.eof()) {
+	ifstream f(filename, ios::binary);
+	if (!f.is_open() || f.peek() == ifstream::traits_type::eof()) {
 		string salt = Hash::generateSalt();
 		User user = User("admin", Hash::getHash("admin", salt), 2, salt, 1);
+		f.close();
 		User::writeUser(user);
 	}
 }

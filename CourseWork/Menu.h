@@ -109,13 +109,14 @@ public:
 	static void mechanicMenu(string name); //Меню механика
 
 	static void authorize(); //Авторизация
-	static void registr(int role); //Регистрация
+	static void registr(int role,bool access); //Регистрация
 
 	static shared_ptr<Client> inputClient(string name); // Ввод клиента с консоли
 	static shared_ptr<Mechanic> inputMechanic(string name); // Ввод механика с консоли
 	static shared_ptr<Request> inputRequest(); // Ввод заявки с консоли
 	static shared_ptr<Vehicle> inputVehicle(); // Ввод автомобиля с консоли
 	static shared_ptr<Service> inputService(); // Ввод услуги с консоли
+	static shared_ptr<Request> inputRequestForUser(string login); // Ввод заказа для пользователя
 
 	static User changeUser(vector<User> users, User user); // Изменение аккаунта
 	static void changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicle> vehicle); // Изменение автомобиля
