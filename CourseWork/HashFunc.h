@@ -8,8 +8,8 @@ using namespace std;
 
 class Hash {
 public:
-	static string generateSalt();
-	static long long int getHash(string password, string salt);
+	static string generateSalt(); // Сгенерировать случайную соль из 8 символов
+	static long long int getHash(string password, string salt); // Получить хэш
 };
 
 #endif HASH_F

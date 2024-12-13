@@ -63,6 +63,8 @@ void Request::delService(int index) {
 		sum += s->getPrice();
 	}
 
+	this->bill = Bill(sum, bill.getStatus());
+
 	bill = Bill(sum, status);
 }
 
@@ -212,6 +214,6 @@ void Request::showRequest(vector<shared_ptr<Request>> requests) {
 			<< setw(10) << r->getBill().getSum() << "|"
 			<< setw(20) << (r->getStatus() == 0 ? "Ожидает" : (r->getStatus() == 1 ? "Ремонтируется" : "Отремонтирован")) << "|" 
 			<< setw(20) << (r->getBill().getStatus() == true?"Оплачен":"Ожидает оплаты") << "|"
-			<< " " << r->day << '.' << r->month << "." << r->year << endl;
+			<< r->day << '.' << r->month << "." << r->year << endl;
 	}
 }

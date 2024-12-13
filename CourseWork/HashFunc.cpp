@@ -11,6 +11,9 @@ string Hash::generateSalt() {
 }
 
 long long int Hash::getHash(string password, string salt) {
+	if (salt.size() != 8) {
+		return 1;
+	}
 	long long int hash = 0;
 	for (char c : password) {
 		if (c == -52) { break; }

@@ -5,6 +5,7 @@ using namespace std;
 //---------------------------------------------------------------------------//
 
 void Menu::initMenu() {
+	cout.setf(ios::left);
 	while (true) {
 		system("cls");
 		User::checkFile();
@@ -14,6 +15,7 @@ void Menu::initMenu() {
 		cout << "2.Регистрация" << endl;
 		cout << "0.Выход" << endl;
 		cout << "------------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("120");
 		switch (input) {
 		case 1:
@@ -48,12 +50,14 @@ void Menu::mechanicMenu(string name) {
 	}
 	while (true) {
 		system("cls");
+		cout << "Добро пожаловать, " << name << "!" << endl;
 		cout << "======Меню механика======" << endl;
 		cout << "1.Просмотр своих заказов" << endl;
 		cout << "2.Просмотр свободных заказов" << endl;
 		cout << "3.Закончить заказ" << endl;
 		cout << "0.Выход из аккаунта" << endl;
 		cout << "-------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("0123");
 		int a;
 		switch (input) {
@@ -104,7 +108,8 @@ void Menu::userMenu(string name) {
 	shared_ptr<Request> r;
 	while (true) {
 		system("cls");
-		cout << "Меню пользователя!" << endl;
+		cout << "Добро пожаловать, " << name << "!" << endl;
+		cout << "======Меню пользователя======" << endl;
 		cout << "1.Просмотр своих заказов" << endl;
 		cout << "2.Просмотр своих авто" << endl;
 		cout << "3.Добавить автомобиль" << endl;
@@ -114,6 +119,8 @@ void Menu::userMenu(string name) {
 		cout << "7.Отсортировать заказы" << endl;
 		cout << "8.Оплатить заказ" << endl;
 		cout << "0.Выход из аккаунта" << endl;
+		cout << "----------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("012345678");
 		switch (input) {
 		case 1:
@@ -179,6 +186,7 @@ void Menu::userMenu(string name) {
 			cout << "4.Сортировать по клиенту(Z-А)" << endl;
 			cout << "5.Сортировать по механику(A-Z)" << endl;
 			cout << "6.Сортировать по механику(Z-А)" << endl;
+			cout << "-------------------------------" << endl;
 			cout << "Выберите метод сортировки:";
 
 			switch (ConsoleHelper::getOneInt("123456")) {
@@ -231,10 +239,13 @@ void Menu::userMenu(string name) {
 void Menu::adminMenu(string name) {
 	while (true) {
 		system("cls");
-		cout << "Меню админа!" << endl;
+		cout << "Добро пожаловать, " << name << "!" << endl;
+		cout << "==========Меню администратора==========" << endl;
 		cout << "1.Управление учетными записями" << endl;
 		cout << "2.Управление данными СТО" << endl;
 		cout << "0.Выйти из аккаунта" << endl;
+		cout << "---------------------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("012");
 		switch (input) {
 		case 1:
@@ -253,7 +264,7 @@ void Menu::adminMenu(string name) {
 void Menu::adminMenuEditAccount(string name) {
 	vector<User> users;
 	int index;
-
+	int temp;
 	while (true) {
 		system("cls");
 		cout << "===Управление аккаунтами===" << endl;
@@ -263,25 +274,35 @@ void Menu::adminMenuEditAccount(string name) {
 		cout << "4.Просмотр аккаунт" << endl;
 		cout << "5.Изменить доступ" << endl;
 		cout << "0.Обратно в меню" << endl;
+		cout << "---------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("012345");
 		switch (input) {
 		case 1:
-			cout << "Введите роль для аккаунта(0 - клиент, 1 - механик, 2 - администратор): ";
-			registr(ConsoleHelper::getOneInt("012"),true);
+			cout << "Введите роль для аккаунта(1 - клиент, 2 - механик, 3 - администратор, 0 - отмена): ";
+			temp = ConsoleHelper::getOneInt("0123");
+			if (temp == 0) {
+				break;
+			}
+			registr(temp-1,true);
 			cout << "Аккаунт зарегистрирован" << endl;
 			break;
 		case 2:
 			users = User::showUsers();
-			cout << "Введите номер аккаунта: ";
+			cout << "Введите номер аккаунта (0 - отмена): ";
 			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			if (index == -1) { break; }
 			users[index] = changeUser(users, users[index]);
 			cout << "Изменения приняты" << endl;
 			User::writeAllUsers(users);
+			Mechanic::writeFile(ServiceStation::getInstance().getMechanics());
+			Client::writeFile(ServiceStation::getInstance().getClients());
 			break;
 		case 3:
 			users = User::showUsers();
-			cout << "Введите номер аккаунта: ";
+			cout << "Введите номер аккаунта(0 - отмена): ";
 			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			if (index == -1) { break; }
 			if (users[index].getLogin() == name) {
 				cout << "Вы не можете удалить себя" << endl;
 				break;
@@ -307,14 +328,16 @@ void Menu::adminMenuEditAccount(string name) {
 			Request::writeFile(ServiceStation::getInstance().getRequests());
 			Client::writeFile(ServiceStation::getInstance().getClients());
 			User::writeAllUsers(users);
+			cout << "Аккаунт удален" << endl;
 			break;
 		case 4:
 			User::showUsers();
 			break;
 		case 5:
 			users = User::showUsers();
-			cout << "Введите номер аккаунта: ";
+			cout << "Введите номер аккаунта(0 - отмена): ";
 			index = ConsoleHelper::getIntToSize(users.size()) - 1;
+			if (index == -1) { break; }
 			if (users[index].getLogin() == name) {
 				cout << "Вы не можете изменять свой доступ" << endl;
 				break;
@@ -338,7 +361,7 @@ void Menu::adminMenuEditAccount(string name) {
 void Menu::adminMenuEditData(string name) {
 	while (true) {
 		system("cls");
-		cout << "===Изменение===" << endl;
+		cout << "========Изменение========" << endl;
 		cout << "1.Добавление записей" << endl;
 		cout << "2.Изменение записей" << endl;
 		cout << "3.Удаление записей" << endl;
@@ -347,6 +370,8 @@ void Menu::adminMenuEditData(string name) {
 		cout << "6.Поиск записей" << endl;
 		cout << "7.Назначить механика на заказ" << endl;
 		cout << "0.Обратно в меню" << endl;
+		cout << "-------------------------" << endl;
+		cout << "Ваш выбор: ";
 		int input = ConsoleHelper::getOneInt("01234567");
 		switch (input) {
 		case 1:
@@ -422,12 +447,15 @@ void Menu::adminMenuEditDataAdd(string name) {
 	shared_ptr<Vehicle> v;
 	shared_ptr<Request> r;
 	shared_ptr<Service> s;
+	int temp;
 	system("cls");
-	cout << "===Добавление===" << endl;
+	cout << "========Добавление========" << endl;
 	cout << "1.Добавить новый автомобиль клиенту" << endl;
 	cout << "2.Добавить заказ" << endl;
 	cout << "3.Добавить услугу" << endl;
 	cout << "0.Назад" << endl;
+	cout << "--------------------------" << endl;
+	cout << "Ваш выбор: ";
 	int input = ConsoleHelper::getOneInt("0123");
 	switch (input) {
 	case 1:
@@ -440,7 +468,13 @@ void Menu::adminMenuEditDataAdd(string name) {
 			ServiceStation::getInstance().addVehicle(v);
 			ServiceStation::getInstance().showClient();
 			cout << "Введите номер клиента: ";
-			ServiceStation::getInstance().getClients()[ConsoleHelper::getIntToSize(ServiceStation::getInstance().getClients().size()) - 1]->addVehicle(v);
+			while (true) {
+				temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getClients().size()) - 1;
+				if (temp != -1) {
+					break;
+				}
+			}
+			ServiceStation::getInstance().getClients()[temp]->addVehicle(v);
 			cout << "Автомобиль успешно добавлен" << endl;
 		}
 		break;
@@ -484,11 +518,13 @@ void Menu::adminMenuEditDataAdd(string name) {
 
 void Menu::adminMenuEditDataEdit(string name) {
 	system("cls");
-	cout << "===Изменение===" << endl;
+	cout << "=======Изменение=======" << endl;
 	cout << "1.Изменить автомобиль" << endl;
 	cout << "2.Изменить заказ" << endl;
 	cout << "3.Изменить услугу" << endl;
 	cout << "0.Назад" << endl;
+	cout << "------------------------" << endl;
+	cout << "Ваш выбор: ";
 	int input = ConsoleHelper::getOneInt("0123");
 
 	int temp, choose;
@@ -529,11 +565,13 @@ void Menu::adminMenuEditDataEdit(string name) {
 
 void Menu::adminMenuEditDataDelete(string name) {
 	system("cls");
-	cout << "===Удаление===" << endl;
+	cout << "=======Удаление========" << endl;
 	cout << "1.Удалить автомобиль" << endl;
 	cout << "2.Удалить заказ" << endl;
 	cout << "3.Удалить услугу" << endl;
 	cout << "0.Назад" << endl;
+	cout << "-------------------------" << endl;
+	cout << "Ваш выбор: ";
 	int input = ConsoleHelper::getOneInt("0123");
 
 	int temp, choose;
@@ -543,7 +581,13 @@ void Menu::adminMenuEditDataDelete(string name) {
 		cout << "ВНИМАНИЕ!" << endl;
 		cout << "При удалении автомобиля учавствовавшего в заказе, заказ будет удален" << endl;
 		ServiceStation::getInstance().showVehicle();
+		cout << "Введите порядковый номер автомобиля(0-отмена): ";
+		
 		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getVehicles().size());
+		if (temp == 0) {
+			break;
+		}
+		
 		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
 		if (choose == 0) {
 			system("pause");
@@ -584,7 +628,9 @@ void Menu::adminMenuEditDataDelete(string name) {
 		break;
 	case 2:
 		ServiceStation::getInstance().showRequest();
+		cout << "Введите порядковый номер заказа(0 - отмена): ";
 		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size());
+		if (temp == 0) { break; }
 		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
 		if (choose == 0) {
 			system("pause");
@@ -610,7 +656,9 @@ void Menu::adminMenuEditDataDelete(string name) {
 		break;
 	case 3:
 		ServiceStation::getInstance().showService();
+		cout << "Введите порядковый номер услуги(0 - отмена): ";
 		temp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
+		if (temp == 0) { break; }
 		choose = ConsoleHelper::getChoose("Вы уверены что хотите удалить?(1-да, 0-нет): ");
 		if (choose == 0) {
 			system("pause");
@@ -624,6 +672,27 @@ void Menu::adminMenuEditDataDelete(string name) {
 			}
 		}
 		ServiceStation::getInstance().delService(temp - 1);
+		for (int i = 0; i < ServiceStation::getInstance().getRequests().size(); i++) {
+			if (ServiceStation::getInstance().getRequests()[i]->getServices().size() == 0) {
+				for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+					for (int j = 0; j < c->getRequests().size(); j++) {
+						if (c->getRequests()[j]->getId() == ServiceStation::getInstance().getRequests()[i]->getId()) {
+							c->delRequest(j);
+							j--;
+						}
+					}
+				}
+				for (shared_ptr<Mechanic> c : ServiceStation::getInstance().getMechanics()) {
+					for (int j = 0; j < c->getRequests().size(); j++) {
+						if (c->getRequests()[j]->getId() == ServiceStation::getInstance().getRequests()[i]->getId()) {
+							c->delRequest(j);
+							j--;
+						}
+					}
+				}
+				ServiceStation::getInstance().delRequest(i);
+			}
+		}
 		cout << "Услуга удалена" << endl;
 		break;
 	case 0:
@@ -634,7 +703,7 @@ void Menu::adminMenuEditDataDelete(string name) {
 
 void Menu::adminMenuEditDataShow(string name) {
 	system("cls");
-	cout << "===Просмотр===" << endl;
+	cout << "===========Просмотр данных СТО============" << endl;
 	cout << "1.Показать клиентов" << endl;
 	cout << "2.Показать механиков" << endl;
 	cout << "3.Показать автомобили" << endl;
@@ -644,6 +713,8 @@ void Menu::adminMenuEditDataShow(string name) {
 	cout << "7.Показать подробную информацию о заказе" << endl;
 	cout << "8.Показать подробную информацию о механике" << endl;
 	cout << "0.Назад" << endl;
+	cout << "------------------------------------------" << endl;
+	cout << "Ваш выбор: ";
 	int input = ConsoleHelper::getOneInt("012345678");
 
 	switch (input) {
@@ -669,8 +740,9 @@ void Menu::adminMenuEditDataShow(string name) {
 		break;
 	case 6: {
 		ServiceStation::getInstance().showClient();
-		cout << "Введите номер клиента: ";
+		cout << "Введите номер клиента(0 - отмена): ";
 		int n = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getClients().size());
+		if (n == 0) { break; }
 		shared_ptr<Client> c = ServiceStation::getInstance().getClients()[n - 1];
 		c->showInfo();
 		system("pause");
@@ -678,8 +750,9 @@ void Menu::adminMenuEditDataShow(string name) {
 	}
 	case 7: {
 		ServiceStation::getInstance().showRequest();
-		cout << "Введите номер заказа: ";
+		cout << "Введите номер заказа(0 - отмена): ";
 		int n = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getRequests().size());
+		if (n == 0) { break; }
 		shared_ptr<Request> req = ServiceStation::getInstance().getRequests()[n-1];
 		cout << "ID: " << req->getId() << endl;
 		cout << "Клиент: " << req->getClient() << endl;
@@ -698,8 +771,9 @@ void Menu::adminMenuEditDataShow(string name) {
 	}
 	case 8: {
 		ServiceStation::getInstance().showMechanic();
-		cout << "Введите номер заказа: ";
+		cout << "Введите номер заказа(0 - отмена): ";
 		int n = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getMechanics().size());
+		if (n == 0) { break; }
 		shared_ptr<Mechanic> m = ServiceStation::getInstance().getMechanics()[n - 1];
 		m->showInfo();
 		system("pause");
@@ -714,14 +788,15 @@ void Menu::adminMenuEditDataShow(string name) {
 void Menu::adminMenuEditDataSort(string name) {
 	ServiceStation& s = ServiceStation::getInstance();
 	system("cls");
-	cout << "===Меню сортировки===" << endl;
+	cout << "======Меню сортировки======" << endl;
 	cout << "1.Отсортировать автомобили" << endl;
 	cout << "2.Отсортировать заказы" << endl;
 	cout << "3.Отсортировать услуги" << endl;
 	cout << "4.Отсортировать механиков" << endl;
 	cout << "5.Отсортировать клиентов" << endl;
 	cout << "0.Назад" << endl;
-	cout << "Выберите пункт меню:";
+	cout << "--------------------------" << endl;
+	cout << "Ваш выбор: ";
 
 	int input = ConsoleHelper::getOneInt("012345");
 
@@ -868,15 +943,15 @@ void Menu::adminMenuEditDataSort(string name) {
 
 void Menu::adminMenuEditDataSearch(string name) {
 	system("cls");
-	cout << "===Меню поиска===" << endl;
+	cout << "=====Меню поиска=====" << endl;
 	cout << "1.Найти автомобиль" << endl;
 	cout << "2.Найти заказ" << endl;
 	cout << "3.Найти услугу" << endl;
 	cout << "4.Найти механика" << endl;
 	cout << "5.Найти клиента" << endl;
 	cout << "0.Назад" << endl;
-
-	cout << "Выберите пункт меню:";
+	cout << "---------------------" << endl;
+	cout << "Ваш выбор: ";
 
 	int input = ConsoleHelper::getOneInt("012345");
 
@@ -911,8 +986,8 @@ void Menu::adminMenuEditDataSearchVehicle() {
 	cout << "1.Поиск по номеру" << endl;
 	cout << "2.Поиск по марке" << endl;
 	cout << "3.Поиск по моделе" << endl;
-	
-	cout << "Выберите пункт меню:";
+	cout << "----------------------------" << endl;
+	cout << "Ваш выбор: ";
 
 	int input = ConsoleHelper::getOneInt("123");
 
@@ -925,7 +1000,7 @@ void Menu::adminMenuEditDataSearchVehicle() {
 		search = ConsoleHelper::readString("Введите номер автомобиля: ");
 		
 		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
-			if (v->getNumber() == search) {
+			if (v->getNumber().find(search) != string::npos) {
 				vehicles.push_back(v);
 				break;
 			}
@@ -936,7 +1011,7 @@ void Menu::adminMenuEditDataSearchVehicle() {
 		search = ConsoleHelper::readString("Введите марку автомобиля: ");
 
 		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
-			if (v->getBrand() == search) {
+			if (v->getBrand().find(search) != string::npos) {
 				vehicles.push_back(v);
 			}
 		}
@@ -946,7 +1021,7 @@ void Menu::adminMenuEditDataSearchVehicle() {
 		search = ConsoleHelper::readString("Введите модель автомобиля: ");
 
 		for (shared_ptr<Vehicle> v : ServiceStation::getInstance().getVehicles()) {
-			if (v->getModel() == search) {
+			if (v->getModel().find(search) != string::npos) {
 				vehicles.push_back(v);
 			}
 		}
@@ -956,6 +1031,7 @@ void Menu::adminMenuEditDataSearchVehicle() {
 
 	if (vehicles.size() == 0) {
 		cout << "Автомобилей не найдено!" << endl;
+		return;
 	}
 
 	Vehicle::showVehicle(vehicles);
@@ -967,8 +1043,9 @@ void Menu::adminMenuEditDataSearchRequest() {
 	cout << "1.Поиск по ID" << endl;
 	cout << "2.Поиск по механику" << endl;
 	cout << "3.Поиск по клиенту" << endl;
-
-	cout << "Выберите пункт меню:";
+	cout << "-------------------------" << endl;
+	cout << "Ваш выбор: ";
+	
 
 	int input = ConsoleHelper::getOneInt("123");
 
@@ -993,7 +1070,7 @@ void Menu::adminMenuEditDataSearchRequest() {
 		search = ConsoleHelper::readString("Введите логин механика: ");
 
 		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
-			if (r->getMechanic() == search) {
+			if (r->getMechanic().find(search) != string::npos) {
 				requests.push_back(r);
 			}
 		}
@@ -1003,7 +1080,7 @@ void Menu::adminMenuEditDataSearchRequest() {
 		search = ConsoleHelper::readString("Введите логин клиента: ");
 
 		for (shared_ptr<Request> r : ServiceStation::getInstance().getRequests()) {
-			if (r->getClient() == search) {
+			if (r->getClient().find(search) != string::npos) {
 				requests.push_back(r);
 			}
 		}
@@ -1013,6 +1090,7 @@ void Menu::adminMenuEditDataSearchRequest() {
 
 	if (requests.size() == 0) {
 		cout << "Заказов не найдено!" << endl;
+		return;
 	}
 
 	Request::showRequest(requests);
@@ -1024,8 +1102,8 @@ void Menu::adminMenuEditDataSearchService() {
 	cout << "1.Поиск по ID" << endl;
 	cout << "2.Поиск по названию" << endl;
 	cout << "3.Поиск по времени" << endl;
-
-	cout << "Выберите пункт меню:";
+	cout << "-----------------------" << endl;
+	cout << "Ваш выбор: ";
 
 	int input = ConsoleHelper::getOneInt("123");
 
@@ -1050,7 +1128,7 @@ void Menu::adminMenuEditDataSearchService() {
 		search = ConsoleHelper::readString("Введите название услуги: ");
 
 		for (shared_ptr<Service> s : ServiceStation::getInstance().getServices()) {
-			if (s->getName() == search) {
+			if (s->getName().find(search) != string::npos) {
 				services.push_back(s);
 			}
 		}
@@ -1080,8 +1158,8 @@ void Menu::adminMenuEditDataSearchMechanic() {
 	cout << "1.Поиск по логину" << endl;
 	cout << "2.Поиск по фамилии" << endl;
 	cout << "3.Поиск по занятости" << endl;
-
-	cout << "Выберите пункт меню:";
+	cout << "---------------------------" << endl;
+	cout << "Ваш выбор: ";
 
 	int input = ConsoleHelper::getOneInt("123");
 
@@ -1106,7 +1184,7 @@ void Menu::adminMenuEditDataSearchMechanic() {
 		search = ConsoleHelper::readString("Введите фамилию: ");
 
 		for (shared_ptr<Mechanic> m : ServiceStation::getInstance().getMechanics()) {
-			if (m->getSurname() == search) {
+			if (m->getSurname().find(search) != string::npos) {
 				mechanics.push_back(m);
 			}
 		}
@@ -1155,7 +1233,7 @@ void Menu::adminMenuEditDataSearchClient() {
 		search = ConsoleHelper::readString("Введите логин: ");
 
 		for (shared_ptr<Client> m : ServiceStation::getInstance().getClients()) {
-			if (m->getLogin() == search) {
+			if (m->getLogin().find(search) != string::npos) {
 				clients.push_back(m);
 				break;
 			}
@@ -1166,7 +1244,7 @@ void Menu::adminMenuEditDataSearchClient() {
 		search = ConsoleHelper::readString("Введите фамилию: ");
 
 		for (shared_ptr<Client> m : ServiceStation::getInstance().getClients()) {
-			if (m->getSurname() == search) {
+			if (m->getSurname().find(search) != string::npos) {
 				clients.push_back(m);
 			}
 		}
@@ -1355,11 +1433,20 @@ shared_ptr<Mechanic> Menu::inputMechanic(string name) {
 
 shared_ptr<Vehicle> Menu::inputVehicle() {
 	shared_ptr<Vehicle> v = make_shared<Vehicle>();
-	string car_number = ConsoleHelper::readString("Введите номер автомобиля: ");
-	if (!ConsoleHelper::checkString(car_number)) {
-		cout << "Введены недопустимые символы" << endl;
-		return v;
+	string car_number;
+	while (true) {
+		car_number = ConsoleHelper::readString("Введите номер автомобиля: ");
+		if (!ConsoleHelper::checkString(car_number)) {
+			cout << "Введены недопустимые символы" << endl;
+			continue;
+		}
+		if (car_number.size() < 4) {
+			cout << "Минимальная длина автомобильного номера должна быть 4 символa!" << endl;
+			continue;
+		}
+		break;
 	}
+	
 	for (shared_ptr<Vehicle> veh : ServiceStation::getInstance().getVehicles()) {
 		if (veh->getNumber() == car_number) {
 			cout << "Автомобиль с данным номером уже существует" << endl;
@@ -1367,8 +1454,24 @@ shared_ptr<Vehicle> Menu::inputVehicle() {
 			return v;
 		}
 	}
-	string brand = ConsoleHelper::readString("Введите марку автомобиля: ");
-	string model = ConsoleHelper::readString("Введите модель автомобиля: ");
+	string brand;
+	while (true) {
+		brand = ConsoleHelper::readString("Введите марку автомобиля: ");
+		if (!ConsoleHelper::checkString(brand)) {
+			cout << "Введены недопустимые символы" << endl;
+			continue;
+		}
+		break;
+	}
+	string model;
+	while (true) {
+		model = ConsoleHelper::readString("Введите модель автомобиля: ");
+		if (!ConsoleHelper::checkString(model)) {
+			cout << "Введены недопустимые символы" << endl;
+			continue;
+		}
+		break;
+	}
 	string vin;
 	while (true) {
 		vin = ConsoleHelper::readString("Введите VIN автомобиля: ");
@@ -1402,7 +1505,12 @@ shared_ptr<Request> Menu::inputRequest() {
 	cout << "Введите номер клиента: ";
 	int input = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getClients().size());
 
-	ServiceStation::getInstance().showVehicle();
+	if (ServiceStation::getInstance().getClients()[input - 1]->getVehicles().size() == 0) {
+		cout << "Автомобилей у клиента не найдено!" << endl;
+		return r;
+	}
+
+	Vehicle::showVehicle(ServiceStation::getInstance().getClients()[input - 1]->getVehicles());
 	cout << "Введите порядковый номер автомобиля: ";
 	int input_v = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getVehicles().size());
 
@@ -1413,7 +1521,7 @@ shared_ptr<Request> Menu::inputRequest() {
 
 	while (true) {
 		int inp = ConsoleHelper::readInt("Введите номер сервиса: ");
-		if (inp > ServiceStation::getInstance().getServices().size()) {
+		if (inp > ServiceStation::getInstance().getServices().size()) {	
 			cout << "Такого номера нет! Будьте внимательней" << endl;
 		}
 		else if (inp == 0) {
@@ -1545,6 +1653,12 @@ User Menu::changeUser(vector<User> users, User user) {
 						break;
 					}
 				}
+				for (shared_ptr<Client> c : ServiceStation::getInstance().getClients()) {
+					if (c->getLogin() == user.getLogin()) {
+						c->setLogin(login);
+						break;
+					}
+				}
 				user.setLogin(login);
 			}
 		}
@@ -1582,7 +1696,7 @@ void Menu::changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicl
 		switch (input) {
 		case 1:
 			tmp = ConsoleHelper::readString("Введите новую марку: ");
-			if (ConsoleHelper::checkString(tmp) == false) {
+			if (!ConsoleHelper::checkString(tmp)) {
 				cout << "Неверный формат строки!" << endl;
 				break;
 			}
@@ -1590,7 +1704,7 @@ void Menu::changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicl
 			break;
 		case 2:
 			tmp = ConsoleHelper::readString("Введите новую модель: ");
-			if (ConsoleHelper::checkString(tmp) == false) {
+			if (!ConsoleHelper::checkString(tmp)) {
 				cout << "Неверный формат строки!" << endl;
 				break;
 			}
@@ -1598,19 +1712,16 @@ void Menu::changeVehicle(vector<shared_ptr<Vehicle>> vehicles, shared_ptr<Vehicl
 			break;
 		case 3:
 			tmp = ConsoleHelper::readString("Введите новый номер: ");
-			if (ConsoleHelper::checkString(tmp) == false) {
+			if (!ConsoleHelper::checkString(tmp)) {
 				cout << "Неверный формат строки!" << endl;
 				break;
 			}
 			vehicle->setNumber(tmp);
 			break;
 		case 4:
-			while (true) {
-				tmp = ConsoleHelper::readString("Введите новый VIN: ");
-				if (tmp.size() != 17) {
-					cout << "Длина VIN должна быть 17 символов" << endl;
-					continue;
-				}
+			tmp = ConsoleHelper::readString("Введите новый VIN: ");
+			if (tmp.size() != 17) {
+				cout << "Длина VIN должна быть 17 символов" << endl;
 				break;
 			}
 			for (shared_ptr<Vehicle> v : vehicles) {
@@ -1700,12 +1811,12 @@ void Menu::changeRequest(vector<shared_ptr<Request>> requests, shared_ptr<Reques
 			}
 			break;
 		case 3:
-			Service::showService(req->getServices());
-			if (req->getServices().size() == 0) {
-				cout << "Услуг нет!" << endl;
+			if (req->getServices().size() == 1) {
+				cout << "Нельзя удалить последнюю услугу!" << endl;
 				break;
 			}
-			cout << "Введите услугу которую вы желаете добавить: ";
+			Service::showService(req->getServices());
+			cout << "Введите номер услуги, которую вы желаете добавить: ";
 			tmp = ConsoleHelper::getIntToSize(ServiceStation::getInstance().getServices().size());
 			req->delService(tmp - 1);
 			cout << "Услуга удалена!" << endl;

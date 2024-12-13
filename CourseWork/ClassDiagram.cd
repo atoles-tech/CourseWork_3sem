@@ -1,14 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="Bill">
-    <Position X="10.25" Y="0.5" Width="1.5" />
+    <Position X="4.75" Y="10" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAQABIAAAAAAAAAACAAAAAAAAAAABAAEAAAAAAAAAAA=</HashCode>
       <FileName>Bill.h</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="ConsoleHelper">
-    <Position X="10.25" Y="6.5" Width="1.5" />
+    <Position X="6.75" Y="10.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAEAAABCQAAAIAAAIADAgAAAAAAEAAAAAAAA=</HashCode>
       <FileName>ConsoleHelper.h</FileName>
@@ -22,7 +22,10 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ListUser&lt;T&gt;">
-    <Position X="10.25" Y="3" Width="1.5" />
+    <Position X="4.75" Y="12.5" Width="1.5" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
     <NestedTypes>
       <Class Name="ListUser&lt;T&gt;::Node&lt;T&gt;" Collapsed="true">
         <TypeIdentifier>
@@ -43,9 +46,9 @@
     </TypeIdentifier>
   </Class>
   <Class Name="Menu">
-    <Position X="12" Y="0.5" Width="1.5" />
+    <Position X="8.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAJQQQEAhAAQBCBAAAAAAAoAAhBQMAgQAEECAAICAA=</HashCode>
+      <HashCode>AAAJQQQEAhAAQBCBAAAAAAAoAChBQMAgQAEECAAICAA=</HashCode>
       <FileName>Menu.h</FileName>
     </TypeIdentifier>
   </Class>
@@ -78,7 +81,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="ServiceStation">
-    <Position X="8.5" Y="0.5" Width="1.5" />
+    <Position X="2.75" Y="9.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AkAAAICCAgAAAAAAgAABAAggAwACAC40MEkBAIAACoA=</HashCode>
       <FileName>ServiceStation.h</FileName>
@@ -92,7 +95,7 @@
     </TypeIdentifier>
   </Class>
   <Class Name="User">
-    <Position X="14" Y="0.5" Width="1.5" />
+    <Position X="0.5" Y="9.25" Width="1.5" />
     <TypeIdentifier>
       <HashCode>BAABAABQQAUBAQICAARAACAAAAKAAAgAAAAAABAAUEA=</HashCode>
       <FileName>User.h</FileName>

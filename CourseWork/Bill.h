@@ -8,13 +8,13 @@ using namespace std;
 
 class Bill {
 private:
-	double sum;
-	bool status;
+	double sum; // Стоимость
+	bool status; // Статус оплаты
 public:
 	Bill(double sum, bool status);
 	Bill();
 
-	void approveBill();
+	void approveBill(); // Оплатить счет
 
 	/*Геттеры*/
 	double getSum();

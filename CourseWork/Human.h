@@ -8,10 +8,10 @@ using namespace std;
 
 class Human {
 protected:
-	string login;
-	string name;
-	string surname;
-	string email;
+	string login; // Логин аккаунта
+	string name; // Имя пользователя
+	string surname; // Фамилия пользователя
+	string email; // Электронная почта
 public:
 	Human(string login, string name, string surname, string email);
 
@@ -27,7 +27,7 @@ public:
 	void setName(string name);
 	void setSurname(string surname);
 
-	virtual void showInfo() = 0;
+	virtual void showInfo() = 0; // Показать информации о человеке
 
 };
 

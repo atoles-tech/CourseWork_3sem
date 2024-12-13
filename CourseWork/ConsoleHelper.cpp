@@ -5,6 +5,10 @@ string ConsoleHelper::readString(string s) {
 	string str;
 	while (true) {
 		getline(cin, str);
+		if (str.size() > 20) {
+			cout << "Строка не должна превышать 20 символов" << endl;
+			continue;
+		}
 		if (str.size() >= 1) {
 			break;
 		}
@@ -122,7 +126,9 @@ bool ConsoleHelper::checkString(string str) {
 bool ConsoleHelper::checkName(string name) {
 	if (name.size() < 1) { return false; }
 	for (char c : name) {
-		if ((c >= 192 && c <= 223) || (c >= 224 && c <= 255)) {
+	
+		if (!((c >= 'А' && c <= 'Я') || (c >= 'а' && c <= 'я')) 
+			&& !((c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z'))) {
 			return false;
 		}
 	}
@@ -136,7 +142,7 @@ int ConsoleHelper::getIntToSize(int size) {
 	}
 	do {
 		input = readInt("");
-		if (input >= 1 && input <= size) {
+		if (input >= 0 && input <= size) {
 			break;
 		}
 		else {

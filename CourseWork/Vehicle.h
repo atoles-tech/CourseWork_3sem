@@ -14,10 +14,10 @@ class Vehicle {
 private:
 	const static string filename;
 
-	string car_number;
-	string model;
-	string brand;
-	string vin;
+	string car_number; // Автомобильный номер
+	string model; // Модель автомобиля
+	string brand; // Марка автомобиля
+	string vin; // VIN номер автомобиля (состоит из 17 символов)
 public:
 	Vehicle(string car_number, string model, string brand, string vin);
 	Vehicle();

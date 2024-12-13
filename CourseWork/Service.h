@@ -15,10 +15,10 @@ class Service {
 private:
 	const static string filename;
 
-	int service_id;
-	string name;
-	double price;
-	int time; // в часах
+	int service_id; // ID услуги
+	string name; // Название услуги
+	double price; // Стоимость услуги
+	int time; // Примерное время выполнение услуги
 public:
 	Service(int service_id,string name, double price, int time);
 	Service();
@@ -39,7 +39,7 @@ public:
 	static vector<shared_ptr<Service>> readFile();
 	static void writeFile(vector<shared_ptr<Service>> services);
 
-	static void showService(vector<shared_ptr<Service>> services);
+	static void showService(vector<shared_ptr<Service>> services); // Просмотр информации о списке услуг
 };
 
 #endif // !SERVICE_H

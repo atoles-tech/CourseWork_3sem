@@ -11,7 +11,7 @@ using namespace std;
 
 class ConsoleHelper {
 public:
-	static string readString(string s); // Получить строку
+	static string readString(string s); // Получить  (до 20 символов)
 	static int readInt(string s); // Получить целое число
 	static double readDouble(string s); // Получить число с плавающей точкой
 	static int getOneInt(string numbers); // Получить цифру из переданной строки

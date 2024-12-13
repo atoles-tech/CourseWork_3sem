@@ -20,15 +20,16 @@ class Request {
 private:
 	const static string filename;
 
-	int id;
-	string client;
-	string mechanic;
-	shared_ptr<Vehicle> vehicle;
-	Bill bill;
-	vector<shared_ptr<Service>> services;
+	int id; // ID заказа
+	string client; // Логин клиента
+	string mechanic; // Логин механика
+	shared_ptr<Vehicle> vehicle; // Авто на обслуживании
+	Bill bill; // Счет
+	vector<shared_ptr<Service>> services; // Список услуг
 	int status; // 0 - ожидает | 1 - ремонтируется | 2 - отремантирован
 
-	int day;
+	/*Дата создания заказа*/
+	int day; 
 	int month;
 	int year;
 
@@ -37,8 +38,8 @@ public:
 	Request(int id, string client, shared_ptr<Vehicle> vehicle, vector<shared_ptr<Service>> services, int status, bool statusBill,int day,int month, int year);
 	Request();
 
-	void delService(int index);
-	void addService(shared_ptr<Service> s);
+	void delService(int index); // Удалить услугу
+	void addService(shared_ptr<Service> s); // Добавить услугу
 
 	/*Геттеры*/
 	int getId();
@@ -63,7 +64,7 @@ public:
 	static void writeFile(vector<shared_ptr<Request>> requests);
 	static void writeOneFile(shared_ptr<Request> r);
 
-	static void showRequest(vector<shared_ptr<Request>> requests);
+	static void showRequest(vector<shared_ptr<Request>> requests); // Показать заказы
 };
 
 #endif // !REQUEST_H
